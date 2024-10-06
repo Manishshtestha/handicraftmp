@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Trello-like Cards</title>
+		<style>
+			.board {
+				display: flex;
+				width: 800px;
+				height: 600px;
+				border: 1px solid #ccc;
+				padding: 10px;
+			}
+
+			.list {
+				width: 200px;
+				height: 100%;
+				padding: 10px;
+				border-right: 1px solid #ccc;
+			}
+
+			.card {
+				width: 150px;
+				height: 80px;
+				margin-bottom: 10px;
+				cursor: move;
+				background-color: #f0f0f0;
+				border-radius: 5px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="board">
+			<div class="list" id="list1"></div>
+			<div class="list" id="list2"></div>
+			<div class="list" id="list3"></div>
+		</div>
+
+		<!-- Add three cards -->
+		<div class="card" draggable="true">Card 1</div>
+		<div class="card" draggable="true">Card 2</div>
+		<div class="card" draggable="true">Card 3</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				const lists = document.querySelectorAll(".list");
+				const cards = document.querySelectorAll(".card");
+
+				// Function to handle drag start
+				function dragStart(e) {
+					draggingCard = e.target;
+				}
+
+				// Function to handle drag over
+				function dragOver(e) {
+					e.preventDefault();
+				}
+
+				// Function to handle drop
+				function drop(e) {
+					e.preventDefault();
+					const targetList = e.target.closest(".list");
+
+					// Move the card to the new list
+					targetList.appendChild(draggingCard);
+				}
+
+				// Add event listeners to cards
+				cards.forEach((card) => {
+					card.addEventListener("dragstart", dragStart);
+					card.addEventListener("dragover", dragOver);
+					card.addEventListener("drop", drop);
+				});
+
+				// Add event listener to lists
+				lists.forEach((list) => {
+					list.addEventListener("dragover", dragOver);
+					list.addEventListener("drop", drop);
+				});
+			});
+
+			// Global variable to store the dragged card
+			let draggingCard = null;
+		</script>
+	</body>
+</html>

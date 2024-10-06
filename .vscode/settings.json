@@ -1,0 +1,22 @@
+{
+    "hide-files.files": [
+        "STATIC/SCSS/navbar.css",
+        "STATIC/SCSS/design.css",
+        "STATIC/SCSS/log_reg.css"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "*.class": true,
+        "*.css": true,
+        "*.css.map": true,
+        "*.exe": true,
+        "STATIC/SCSS/navbar.css": true,
+        "STATIC/SCSS/design.css": true,
+        "STATIC/SCSS/log_reg.css": true
+    }
+}
