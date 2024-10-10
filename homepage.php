@@ -8,6 +8,7 @@ $val = new Validate();
 
 $artisans = $obj->selectAlltypeQ('users', 'user_type', 'artisan');
 $products = $obj->selectAllQ('products');
+$noOfProducts = $obj->numQ('products');
 if (!empty($_POST)) {
     if (isset($_POST['becomeArtisan'])) {
         if (!isset($_SESSION['user_id'])) {
@@ -77,6 +78,7 @@ $total = $subtotal + $tax + $shipping;
     <link rel="stylesheet" href="./STATIC/CSS/design.css">
     <link rel="stylesheet" href="./STATIC/CSS/navbar.css">
     <link rel="stylesheet" href="./STATIC/CSS/toast.css">
+    <link rel="stylesheet" href="./STATIC/CSS/productCarousel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -145,11 +147,27 @@ $total = $subtotal + $tax + $shipping;
             }
             ?>
             <div class="dropdown2">
-                <button class="dropdown-btn btn" id="dropdownMenuBtn">
-                    <span class="button_top">
-                        <i class="fa-solid fa-user"></i>
-                    </span>
-                </button>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                ?>
+                    <button class="dropdown-btn btn" id="dropdownMenuBtn">
+                        <span class="button_top">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                    </button>
+                <?php
+                } else {
+                ?>
+                    <a href="log_reg.php">
+                        <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
+                        <button class="btn" title="Signin">
+                            <span class="button_top"><i class="fa-solid fa-right-to-bracket"></i>
+                            </span>
+                        </button>
+                    </a>
+                <?php
+                }
+                ?>
                 <div class="dropdown-content2" id="dropMenu">
                     <?php
                     if (isset($_SESSION['user_id'])) {
@@ -157,8 +175,8 @@ $total = $subtotal + $tax + $shipping;
                         if ($userType['user_type'] == 'artisan') {
                     ?>
                             <!-- <a href="addProduct.php"> -->
-                            <button onclick="showCartModal()" class="btn btn-fw">
-                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i> Cart
+                            <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
+                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i>
                                 </span>
                             </button>
                             <!-- </a> -->
@@ -166,22 +184,14 @@ $total = $subtotal + $tax + $shipping;
                     } ?>
                     <?php if (isset($_SESSION['user_id'])) { ?>
                         <a href="">
-                            <button class="btn btn-fw">
-                                <span class="button_top">Profile</span>
+                            <button class="btn btn-fw" title="Update Profile">
+                                <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
                             </button>
                         </a>
                         <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                             <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw">
-                                <span class="button_top">Logout
-                                </span>
-                            </button>
-                        </a>
-                    <?php } else { ?>
-                        <a href="log_reg.php">
-                            <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw">
-                                <span class="button_top">Sign in
+                            <button class="btn btn-fw" title="Logout">
+                                <span class="button_top"><i class="fa-solid fa-right-from-bracket"></i>
                                 </span>
                             </button>
                         </a>
@@ -241,7 +251,7 @@ $total = $subtotal + $tax + $shipping;
             <div class="grid">
                 <?php
                 if (!empty($products)) {
-                    foreach (array_slice($products, 0, 4) as $product) { ?>
+                    foreach (array_slice($products, $noOfProducts - 4, $noOfProducts) as $product) { ?>
                         <div class="card">
                             <div class="card-img">
                                 <img src="./uploads/<?php echo $product['main_img'] ?>" alt="" srcset="" width="200px">
@@ -257,9 +267,6 @@ $total = $subtotal + $tax + $shipping;
                                     <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
                                     <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
                                     <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
-                                    <!-- <button class="card-btn" name="add_to_cart">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </button> -->
                                     <button class="btn" name="add_to_cart">
                                         <span class="button_top">
                                             <i class="fa-solid fa-cart-plus"></i>
@@ -284,8 +291,59 @@ $total = $subtotal + $tax + $shipping;
                 </button>
             </a>
         </div>
-        <div id="section3">
-
+        <div id="section3" style="width:100%;">
+            <p>Product Categories</p>
+            <h2>Explore Our Handmade Treasures</h2>
+            <p>Browse our diverse selection of handcrafted products across various categories.</p>
+            <div class="pausableCarousel">
+                <div class="MovingGroup">
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Textile and Fiber Arts'">
+                        Textile and Fiber Arts
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Home and Living'">
+                        Home and Living
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Craft Supplies'">
+                        Craft Supplies
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Glass Art'">
+                        Glass Art
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Painting and Drawing'">
+                        Painting and Drawing
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Sculpture'">
+                        Sculpture
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Seasonal Items'">
+                        Seasonal Items
+                    </div>
+                </div>
+                <!-- Add `aria-hidden` to hide the duplicated cards from screen readers. -->
+                <div aria-hidden class="MovingGroup">
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Textile and Fiber Arts'">
+                        Textile and Fiber Arts
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Home and Living'">
+                        Home and Living
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Craft Supplies'">
+                        Craft Supplies
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Glass Art'">
+                        Glass Art
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Painting and Drawing'">
+                        Painting and Drawing
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Sculpture'">
+                        Sculpture
+                    </div>
+                    <div class="movingcard" onclick="window.location.href='products.php?category=Seasonal Items'">
+                        Seasonal Items
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="categories">
@@ -295,6 +353,7 @@ $total = $subtotal + $tax + $shipping;
 
     </div>
     <script src="./STATIC/JS/functions"></script>
+    <script src="./STATIC/JS/Carousel"></script>
 </body>
 
 </html>

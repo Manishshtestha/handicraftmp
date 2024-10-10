@@ -101,15 +101,25 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 });
 
-function delayedTrigger(){
+function delayedTrigger() {
 	document.getElementById("Search").style.display = "block";
 }
 
 const buttonClass = "dropdownButtonSearch0";
 
-document.querySelectorAll(buttonClass).forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Run the function after 2 seconds
-        setTimeout(delayedTrigger, 2000);
-    });
+document.querySelectorAll(buttonClass).forEach((btn) => {
+	btn.addEventListener("click", function () {
+		// Run the function after 2 seconds
+		setTimeout(delayedTrigger, 2000);
+	});
 });
+
+document
+	.getElementById("toggleView")
+	.addEventListener("click", function () {
+		var carousel = document.getElementById("Carousel");
+		var gridview = document.getElementById("GridView");
+		carousel.style.display =
+			carousel.style.display === "block" ? "none" : "block";
+		gridview.style.display = gridview.style.display === "flex" ? "none" : "flex";
+	})

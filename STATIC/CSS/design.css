@@ -235,7 +235,6 @@ body {
 
 /* Sections  */
 #section1,
-#section3,
 #abtsec3 {
 	/* width: 100%; */
 	margin: 0 auto;
@@ -245,7 +244,8 @@ body {
 	display: flex;
 	padding: 0 40px;
 }
-#abtsec1 {
+#abtsec1,
+#section3 {
 	width: 90%;
 	display: flex;
 	margin: 0 auto;
@@ -258,7 +258,8 @@ body {
 	background: rgba(30, 32, 34, 0.5);
 	backdrop-filter: blur(7px);
 }
-#section2 {
+#section2,
+#section3 {
 	height: 70vh;
 	display: flex;
 	flex-direction: column;
@@ -377,20 +378,167 @@ body {
 		width: 100%;
 	}
 }
-/* #abtsec1 .right {
-	padding-top: 45px;
-	width: 50%;
-	height: 98vh;
-	height: 40rem;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	overflow: hidden;
-	img {
-		border-radius: 50px;
-		width: 100%;
+/* #section3 {
+	.grid {
+		margin: 0 auto;
+		padding: 20px 0;
+		max-width: 900px;
+		overflow: hidden;
+		display: flex;
+		flex: 0 0 100%;
+		&:hover .MovingGroup {
+			animation-play-state: paused;
+		}
+		.movingcard {
+			width: 400px;
+			color: white;
+			border-radius: 24px;
+			box-shadow: rgba(0, 0, 0, 10%) 5px 5px 20px 0;
+			padding: 20px;
+			font-size: xx-large;
+			justify-content: center;
+			align-items: center;
+			min-height: 200px;
+
+			&:nth-child(1) {
+				background: #7958ff;
+			}
+
+			&:nth-child(2) {
+				background: #5d34f2;
+			}
+
+			&:nth-child(3) {
+				background: #4300da;
+			}
+		}
+		.MovingGroup {
+			display: flex;
+			gap: 20px;
+			width: 500px;
+			padding-right: 20px;
+			will-change: transform;
+			animation: scrolling 10s linear infinite;
+		}
+		a {
+			text-decoration: none;
+			color: aliceblue;
+			width: 350px;
+			border: 1px solid grey;
+			height: 100px;
+			display: flex;
+			align-items: center;
+			transition: all 0.2s;
+			padding: 7.5px 5px;
+			font-size: 1em;
+			border-radius: 30px;
+			img {
+				width: 95px;
+				height: 95px;
+				transition: all 0.2s;
+				filter: grayscale(0.5);
+				margin-right: 10px;
+				border-radius: 25px;
+			}
+			&:hover {
+				color: aqua;
+				& > img {
+					filter: grayscale(0);
+					transform: scale(1.1);
+				}
+			}
+		}
 	}
 } */
+.pausableCarousel {
+	margin: 0 auto;
+	padding: 20px 0;
+	max-width: 100%;
+	overflow: hidden;
+	display: flex;
+	/* flex: 0 0 100%; */
+	&:hover .MovingGroup {
+		animation-play-state: paused;
+	}
+}
+
+.movingcard {
+	width: 400px;
+	color: white;
+	border-radius: 24px;
+	box-shadow: rgba(0, 0, 0, 10%) 5px 5px 20px 0;
+	padding: 20px;
+	font-size: 2em;
+	justify-content: center;
+	align-items: center;
+	min-height: 200px;
+	font-weight: 700;
+	text-align: center;
+	&:nth-child(1) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/textile.jpg);
+		background-size: cover;
+	}
+	&:nth-child(2) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/homeandliving.jpg);
+		background-size: cover;
+	}
+	&:nth-child(3) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/craftSupplies.jpg);
+		background-size: cover;
+	}
+	&:nth-child(4) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/glassArt.jpg);
+		background-size: cover;
+	}
+	&:nth-child(5) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/painting.jpg);
+		background-size: cover;
+	}
+	&:nth-child(6) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/sculpture.jpg);
+		background-size: cover;
+	}
+	&:nth-child(7) {
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+		background: url(../Images/seasonal.jpg);
+		background-size: cover;
+	}
+	a {
+		text-decoration: none;
+		color: aliceblue;
+		padding: 40px;
+	}
+}
+.MovingGroup {
+	display: flex;
+	gap: 20px;
+	width: 2800px;
+	/* Add padding to the right to create a gap between the last and first card. */
+	padding-right: 20px;
+	will-change: transform; /* We should be nice to the browser - let it know what we're going to animate. */
+	animation: scrolling 20s linear infinite;
+}
+@keyframes scrolling {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-100%);
+	}
+}
 
 .slider {
 	position: relative;
@@ -438,7 +586,7 @@ body {
 		--bg-color: #111;
 		--main-color: #fefefe;
 		--main-focus: #2d8cf0;
-		width: 252px;
+		width: 248px;
 		height: 300px;
 		background: rgba(25, 25, 25, 0.8);
 		border: 2px solid var(--main-color);
@@ -450,10 +598,10 @@ body {
 		padding: 20px;
 		gap: 10px;
 		font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-		Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-		sans-serif;
+			Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+			sans-serif;
 	}
-	
+
 	.card-img {
 		transition: all 0.5s;
 		display: flex;
@@ -466,14 +614,14 @@ body {
 		width: 125px;
 		height: 125px;
 	}
-	
+
 	.card-title {
 		font-size: 20px;
 		font-weight: 500;
 		text-align: center;
 		color: var(--font-color);
 	}
-	
+
 	.card-subtitle {
 		font-size: 14px;
 		font-weight: 400;
@@ -484,26 +632,26 @@ body {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	
+
 	.card-divider {
 		width: 100%;
 		border: 1px solid var(--main-color);
 		border-radius: 50px;
 	}
-	
+
 	.card-footer {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
 	}
-	
+
 	.card-price {
 		font-size: 20px;
 		font-weight: 500;
 		color: var(--main-color);
 	}
-	
+
 	.card-price span {
 		font-size: 20px;
 		font-weight: 500;
@@ -519,7 +667,7 @@ body {
 		transition: all 0.3s;
 		color: var(--main-color);
 	}
-	
+
 	.card-btn svg {
 		width: 100%;
 		height: 100%;
@@ -531,7 +679,7 @@ body {
 		/* transform: translateY(-30px); */
 		transform: scale(1.1);
 	}
-	
+
 	.card-btn:hover {
 		border: 2px solid var(--main-focus);
 		color: var(--main-focus);
@@ -540,12 +688,12 @@ body {
 	.card-btn:hover svg {
 		fill: var(--main-focus);
 	}
-	
+
 	.card-btn:active {
 		transform: translateY(3px);
 	}
 }
-.grid .card{
+.grid .card {
 	width: 316px;
 	.card-subtitle {
 		font-size: 14px;
@@ -575,7 +723,7 @@ body {
 		color: aliceblue;
 		border-radius: 10px;
 		border: 1px solid grey;
-		background-color:rgba(25, 25, 25, 0.8);
+		background-color: rgba(25, 25, 25, 0.8);
 		.cartItem {
 			margin-bottom: 5px;
 			border-bottom: 1px solid grey;
@@ -629,7 +777,7 @@ body {
 			border: 1px solid grey;
 			height: 290px;
 			width: 100%;
-			background-color:rgba(25, 25, 25, 0.8);
+			background-color: rgba(25, 25, 25, 0.8);
 			border-radius: 10px;
 			color: aliceblue;
 			display: flex;
@@ -657,7 +805,7 @@ body {
 			width: 100%;
 			height: 90px;
 			border-radius: 10px;
-			background-color:rgba(25, 25, 25, 0.8);
+			background-color: rgba(25, 25, 25, 0.8);
 			display: flex;
 			flex-direction: column;
 			gap: 3px;
@@ -671,7 +819,7 @@ body {
 				padding: 5px;
 				width: 96.7%;
 				margin-left: 5px;
-				background-color:rgba(25, 25, 25, 0.8);
+				background-color: rgba(25, 25, 25, 0.8);
 				color: aliceblue;
 				border: 1px solid grey;
 			}

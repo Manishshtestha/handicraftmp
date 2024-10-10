@@ -91,9 +91,9 @@ class Query extends Database
             return false;
         }
     }
-    public function selectAlltypeInOrderQ($table, $key, $value, $order, $dir = "ASC")
+    public function selectAlltypeInDirectionQ($table, $order, $dir = "DESC")
     {
-        $sql = "SELECT * FROM $table WHERE $key='$value' AND status='1' ORDER BY $order $dir";
+        $sql = "SELECT * FROM $table ORDER BY $order $dir";
         // echo ($sql);die();
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
@@ -122,7 +122,6 @@ class Query extends Database
         $sql = "DELETE FROM $table WHERE $pk = '$id'";
         $this->conn->query($sql);
     }
-
     // for update query
     public function getRecordById($table, $pk, $id)
     {

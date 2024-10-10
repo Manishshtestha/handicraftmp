@@ -106,6 +106,7 @@ if (isset($_SESSION['cart'])) {
     $shipping = count(value: $_SESSION['cart']) * 90;
 }
 $total = $subtotal + $tax + $shipping;
+$noOfProducts = $obj->numQ('products');
 ?>
 
 <!DOCTYPE html>
@@ -118,6 +119,7 @@ $total = $subtotal + $tax + $shipping;
     <link rel="stylesheet" href="./STATIC/CSS/design.css">
     <link rel="stylesheet" href="./STATIC/CSS/navbar.css">
     <link rel="stylesheet" href="./STATIC/CSS/toast.css">
+    <link rel="stylesheet" href="./STATIC/CSS/productCarousel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
@@ -284,9 +286,83 @@ $total = $subtotal + $tax + $shipping;
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="products">
+    <div class="container" style="display:flex;justify-content:center;">
+        <button style="margin-top:5px;width:150px;top:25px;position:sticky;transform:translateX(550px);z-index:100000;background:none;color:aliceblue;border:1px solid aliceblue;" id="toggleView">
+            <span class="button_top">
+                Change View Mode
+            </span>
+        </button>
+        <div class="carousel" style="display:none;" id="Carousel">
+            <div class="list">
+                <?php
+                if (!empty($products)) {
+                    if (count($products) >= 3) {
+                        foreach (array_slice($products, 0, $noOfProducts) as $product) { ?>
+                            <div class="item">
+                                <img src="./uploads/<?php echo $product['main_img']; ?>">
+                                <div class="introduce">
+                                    <div class="title"><?php $product['product_name'] ?></div>
+                                    <!-- <div class="topic">Airpod</div> -->
+                                    <div class="des" style="color:aliceblue;">
+                                        <!-- 20 lorem -->
+                                        <?php echo substr($product['description'], 0, 200); ?>
+                                    </div>
+                                    <button class="btn seeMore" name="add_to_cart">
+                                        <span class="button_top">
+                                            View More
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="detail">
+                                    <div class="title"><?php echo $product['product_name'] ?></div>
+                                    <div class="des">
+                                        <!-- lorem 50 -->
+                                        <?php echo $product['description']; ?>
+                                    </div>
+                                    <div class="price">
+                                    </div>
+                                    <div class="checkout">
+                                        <form action="products.php?id=<?php echo $product['product_id'] ?>" method="post">
+                                            <p style="color:aliceblue;display:inline-flex;font-size:1.5em;">Rs.<?php echo $product['price']; ?></p>
+                                            <input type="text" name="product_id" value="<?php echo $product['product_id'] ?>" hidden>
+                                            <input type="text" name="product_name" value="<?php echo $product['product_name'] ?>" hidden>
+                                            <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
+                                            <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
+                                            <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
+                                            <button class="btn" name="add_to_cart">
+                                                <span class="button_top">
+                                                    ADD TO CART
+                                                </span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
 
+                            </div>
+                        <?php }
+                    } else {
+                        ?>
+                        <div class="noProduct">
+                            <p>Cannot create a Carousel with less than 3 items</p>
+                        </div>
+                    <?php
+                    }
+                } else {
+                    ?>
+                    <div class="noProduct">
+                        <p>No Products Found! Please try different Query and Filters!</p>
+                    </div>
+                <?php
+                } ?>
+            </div>
+            <div class="arrows">
+                <button id="prev">
+                    < </button>
+                        <button id="next"> > </button>
+                        <button id="back" style="display:none;">Return</button>
+            </div>
+        </div>
+        <div class="products" id="GridView" style="display:flex;">
             <?php
             if (!empty($products)) {
                 foreach (array_slice($products, 0, 10) as $product) { ?>
@@ -324,6 +400,7 @@ $total = $subtotal + $tax + $shipping;
         </div>
     </div>
     <script src="./STATIC/JS/functions.js"></script>
+    <script src="./STATIC/JS/Carousel.js"></script>
 </body>
 
 </html>
