@@ -25,14 +25,17 @@ if (!empty($_POST)) {
     // echo $email;
     $password = md5($_POST['loginpassword']);
     // echo $password;die;
-    $userlogin = $obj->login('users',$email,$password);
+    $userlogin = $obj->login('users', $email, $password);
     if ($userlogin != false) {
       session_destroy();
       session_start();
       $_SESSION['user_id'] = $userlogin['user_id'];
       $_SESSION['logged_user'] = $userlogin['username'];
       $_SESSION['success'] = ['value' => '✅Logged in Successfully!', 'timestamp' => time()];
-      header("Location:homepage.php");
+      if (isset($_COOKIE['return_to'])) {
+        header('Location: ' . $_COOKIE['return_to']);
+      } else
+        header("Location:homepage.php");
     } else {
       $_SESSION['invalid'] = ['value' => '❗Invalid Email/Password', 'timestamp' => time()];
     }
@@ -58,7 +61,7 @@ if (!empty($_POST)) {
 $errArr = array($userErr['username'], $userErr['email'], $userErr['password'], $userErr['cpass']);
 for ($i = 0; $i < count($errArr); $i++) {
   if (!empty($errArr[$i])) {
-    $_SESSION['error'] = ['value'=>"❌".$errArr[$i],'timestamp'=>time()];
+    $_SESSION['error'] = ['value' => "❌" . $errArr[$i], 'timestamp' => time()];
     break;
   }
 }
@@ -102,14 +105,14 @@ for ($i = 0; $i < count($errArr); $i++) {
       position: relative;
       width: 900px;
       height: 550px;
-      background: rgba(30, 32, 34,0.5);
+      background: rgba(30, 32, 34, 0.5);
       backdrop-filter: blur(7px);
       /* border-radius: 10px; */
       border: 2px solid aliceblue;
     }
 
     .form {
-      background: rgba(30, 32, 34,0);
+      background: rgba(30, 32, 34, 0);
       position: relative;
       width: 640px;
       height: 100%;
@@ -197,7 +200,7 @@ for ($i = 0; $i < count($errArr); $i++) {
       width: 900px;
       height: 100%;
       padding-left: 260px;
-      background: rgb(30, 32, 34,0);
+      background: rgb(30, 32, 34, 0);
       -webkit-transition: -webkit-transform 1.2s ease-in-out;
       transition: -webkit-transform 1.2s ease-in-out;
       transition: transform 1.2s ease-in-out;

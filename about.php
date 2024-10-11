@@ -3,6 +3,11 @@ session_start();
 include 'query.php';
 include 'validate.php';
 
+$cookie_name = "return_to";
+$cookie_value = "about.php";
+$cookie_expiration = time() + 60 * 5;
+setcookie($cookie_name, $cookie_value, $cookie_expiration,'/');
+
 $obj = new Query();
 $val = new Validate();
 $artisans = $obj->selectAlltypeQ('users', 'user_type', 'artisan');
@@ -80,10 +85,10 @@ $total = $subtotal + $tax + $shipping;
             <ul class="top-row">
                 <div></div>
                 <div class="cent">
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a href="index.php" class="nav-link"><span class="inner-link">Home</span></a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a href="about.php" class="nav-link"><span class="inner-link">About</span></a>
                     </li>
                     <li class="nav-item">
@@ -127,11 +132,27 @@ $total = $subtotal + $tax + $shipping;
             }
             ?>
             <div class="dropdown2">
-                <button class="dropdown-btn btn" id="dropdownMenuBtn">
-                    <span class="button_top">
-                        <i class="fa-solid fa-user"></i>
-                    </span>
-                </button>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                ?>
+                    <button class="dropdown-btn btn" id="dropdownMenuBtn">
+                        <span class="button_top">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                    </button>
+                <?php
+                } else {
+                ?>
+                    <a href="log_reg.php">
+                        <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
+                        <button class="btn" title="Signin">
+                            <span class="button_top"><i class="fa-solid fa-right-to-bracket"></i>
+                            </span>
+                        </button>
+                    </a>
+                <?php
+                }
+                ?>
                 <div class="dropdown-content2" id="dropMenu">
                     <?php
                     if (isset($_SESSION['user_id'])) {
@@ -139,35 +160,23 @@ $total = $subtotal + $tax + $shipping;
                         if ($userType['user_type'] == 'artisan') {
                     ?>
                             <!-- <a href="addProduct.php"> -->
-                            <button onclick="showCartModal()" class="btn btn-fw">
-                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i> Cart
+                            <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
+                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i>
                                 </span>
                             </button>
                             <!-- </a> -->
                     <?php }
                     } ?>
-                    <!-- <button onclick="showCartModal()" class="btn btn-fw">
-                        <span class="button_top"><i class="fa-solid fa-cart-shopping"></i> Cart
-                        </span>
-                    </button> -->
                     <?php if (isset($_SESSION['user_id'])) { ?>
                         <a href="">
-                            <button class="btn btn-fw">
-                                <span class="button_top">Profile</span>
+                            <button class="btn btn-fw" title="Update Profile">
+                                <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
                             </button>
                         </a>
                         <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                             <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw">
-                                <span class="button_top">Logout
-                                </span>
-                            </button>
-                        </a>
-                    <?php } else { ?>
-                        <a href="log_reg.php">
-                            <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw">
-                                <span class="button_top">Sign in
+                            <button class="btn btn-fw" title="Logout">
+                                <span class="button_top"><i class="fa-solid fa-right-from-bracket"></i>
                                 </span>
                             </button>
                         </a>

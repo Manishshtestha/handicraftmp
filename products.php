@@ -3,10 +3,16 @@ session_start();
 include 'query.php';
 include 'validate.php';
 
+$cookie_name = "return_to";
+$cookie_value = "products.php";
+$cookie_expiration = time() + 60 * 5;
+setcookie($cookie_name, $cookie_value, $cookie_expiration,'/');
+
 $obj = new Query();
 $val = new Validate();
 $searchKeyword = '';
 $products = $obj->selectAllQ('products');
+
 if (!empty($_POST)) {
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
@@ -137,13 +143,13 @@ $noOfProducts = $obj->numQ('products');
             <ul class="top-row">
                 <div></div>
                 <div class="cent">
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a href="index.php" class="nav-link"><span class="inner-link">Home</span></a>
                     </li>
                     <li class="nav-item">
                         <a href="about.php" class="nav-link"><span class="inner-link">About</span></a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a href="products.php" class="nav-link"><span class="inner-link">Products</span></a>
                     </li>
                 </div>
@@ -151,64 +157,11 @@ $noOfProducts = $obj->numQ('products');
             </ul>
         </div>
         <div class="signup_logout">
-            <!-- <button onclick="showLoginModal();">Login</button> -->
-            <div class="dropdown">
-                <button class="btn" id="dropdownButtonSearch">
-                    <span class="button_top">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                </button>
-
-                <div class="dropdown-content search" id="Search">
-                    <div class="searchContent">
-                        <form action="" method="GET" id="searchForm">
-                            <input class="searchbar" placeholder="Search a product" name="keyword" type="text" value="<?php echo $searchKeyword; ?>" />
-                            <div class="filters">
-                                <div class="filter">
-                                    <label>
-                                        <span>Category:</span>
-                                        <select name="category">
-                                            <option value="" disabled selected>--Select Category--</option>
-                                            <option value="Textile and Fiber Arts">Textile and Fiber Arts</option>
-                                            <option value="Home and Living">Home and Living</option>
-                                            <option value="Craft Supplies">Craft Supplies</option>
-                                            <option value="Glass Art">Glass Art</option>
-                                            <option value="Painting and Drawing">Painting and Drawing</option>
-                                            <option value="Sculpture">Sculpture</option>
-                                            <option value="Seasonal Items">Seasonal Items</option>
-                                        </select>
-                                    </label>
-                                    <label class="min-price-slider" style="width: 190px;">
-                                        <span style="text-align:center;">Min Price:</span>
-                                        <input type="range" id="min-price-slider" name="min_price" min="0" max="100000" value="0" step="1000">
-                                        <output id="min-price-output">0</output>
-                                    </label>
-                                    <!-- <label>
-                                        <span>Minimum Rating:</span>
-                                        <div class="rating">
-                                            <input type="radio" id="star5" name="rate" value="5" />
-                                            <label for="star5" title="text"></label>
-                                            <input type="radio" id="star4" name="rate" value="4" />
-                                            <label for="star4" title="text"></label>
-                                            <input type="radio" id="star3" name="rate" value="3" />
-                                            <label for="star3" title="text"></label>
-                                            <input type="radio" id="star2" name="rate" value="2" />
-                                            <label for="star2" title="text"></label>
-                                            <input checked="" type="radio" id="star1" name="rate" value="1" />
-                                            <label for="star1" title="text"></label>
-                                        </div>
-                                    </label> -->
-                                </div>
-                                <button style="margin-top:5px;" class="btn" type="submit">
-                                    <span class="button_top">
-                                        <i class="fa-solid fa-magnifying-glass"></i> Search
-                                    </span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <button class="btn" onclick="window.location.href='products.php?trigger=true'">
+                <span class="button_top">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+            </button>
             <?php
             if (isset($_SESSION['user_id'])) {
                 $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
@@ -237,11 +190,27 @@ $noOfProducts = $obj->numQ('products');
             }
             ?>
             <div class="dropdown2">
-                <button class="dropdown-btn btn" id="dropdownMenuBtn">
-                    <span class="button_top">
-                        <i class="fa-solid fa-user"></i>
-                    </span>
-                </button>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                ?>
+                    <button class="dropdown-btn btn" id="dropdownMenuBtn">
+                        <span class="button_top">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                    </button>
+                <?php
+                } else {
+                ?>
+                    <a href="log_reg.php">
+                        <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
+                        <button class="btn" title="Signin">
+                            <span class="button_top"><i class="fa-solid fa-right-to-bracket"></i>
+                            </span>
+                        </button>
+                    </a>
+                <?php
+                }
+                ?>
                 <div class="dropdown-content2" id="dropMenu">
                     <?php
                     if (isset($_SESSION['user_id'])) {
@@ -249,35 +218,23 @@ $noOfProducts = $obj->numQ('products');
                         if ($userType['user_type'] == 'artisan') {
                     ?>
                             <!-- <a href="addProduct.php"> -->
-                            <button onclick="showCartModal()" class="btn btn-fw">
-                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i> Cart
+                            <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
+                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i>
                                 </span>
                             </button>
                             <!-- </a> -->
                     <?php }
                     } ?>
-                    <!-- <button onclick="showCartModal()" class="btn btn-fw">
-                        <span class="button_top"><i class="fa-solid fa-cart-shopping"></i> Cart
-                        </span>
-                    </button> -->
                     <?php if (isset($_SESSION['user_id'])) { ?>
                         <a href="">
-                            <button class="btn btn-fw">
-                                <span class="button_top">Profile</span>
+                            <button class="btn btn-fw" title="Update Profile">
+                                <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
                             </button>
                         </a>
                         <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                             <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw">
-                                <span class="button_top">Logout
-                                </span>
-                            </button>
-                        </a>
-                    <?php } else { ?>
-                        <a href="log_reg.php">
-                            <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw">
-                                <span class="button_top">Sign in
+                            <button class="btn btn-fw" title="Logout">
+                                <span class="button_top"><i class="fa-solid fa-right-from-bracket"></i>
                                 </span>
                             </button>
                         </a>

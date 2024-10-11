@@ -3,6 +3,11 @@ session_start();
 include 'query.php';
 include 'validate.php';
 
+$cookie_name = "return_to";
+$cookie_value = "homepage.php";
+$cookie_expiration = time() + 60 * 5;
+setcookie($cookie_name, $cookie_value, $cookie_expiration,'/');
+
 $obj = new Query();
 $val = new Validate();
 
@@ -296,50 +301,64 @@ $total = $subtotal + $tax + $shipping;
             <h2>Explore Our Handmade Treasures</h2>
             <p>Browse our diverse selection of handcrafted products across various categories.</p>
             <div class="pausableCarousel">
-                <div class="MovingGroup">
+            <div class="MovingGroup">
                     <div class="movingcard" onclick="window.location.href='products.php?category=Textile and Fiber Arts'">
+                        <img src="./STATIC/Images/textile.jpg" alt="" srcset="">
                         Textile and Fiber Arts
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Home and Living'">
+                        <img src="./STATIC/Images/homeandliving.jpg" alt="" srcset="">
                         Home and Living
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Craft Supplies'">
+                        <img src="./STATIC/Images/craftSupplies.jpg" alt="" srcset="">
                         Craft Supplies
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Glass Art'">
+                        <img src="./STATIC/Images/glassArt.jpg" alt="" srcset="">
                         Glass Art
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Painting and Drawing'">
+                        <img src="./STATIC/Images/painting.jpg" alt="" srcset="">
                         Painting and Drawing
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Sculpture'">
+                        <img src="./STATIC/Images/sculpture.jpg" alt="" srcset="">
                         Sculpture
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Seasonal Items'">
+                        <img src="./STATIC/Images/seasonal.jpg" alt="" srcset="">
                         Seasonal Items
                     </div>
                 </div>
                 <!-- Add `aria-hidden` to hide the duplicated cards from screen readers. -->
                 <div aria-hidden class="MovingGroup">
                     <div class="movingcard" onclick="window.location.href='products.php?category=Textile and Fiber Arts'">
+                        <img src="./STATIC/Images/textile.jpg" alt="" srcset="">
                         Textile and Fiber Arts
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Home and Living'">
+                        <img src="./STATIC/Images/homeandliving.jpg" alt="" srcset="">
                         Home and Living
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Craft Supplies'">
+                        <img src="./STATIC/Images/craftSupplies.jpg" alt="" srcset="">
                         Craft Supplies
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Glass Art'">
+                        <img src="./STATIC/Images/glassArt.jpg" alt="" srcset="">
                         Glass Art
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Painting and Drawing'">
+                        <img src="./STATIC/Images/painting.jpg" alt="" srcset="">
                         Painting and Drawing
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Sculpture'">
+                        <img src="./STATIC/Images/sculpture.jpg" alt="" srcset="">
                         Sculpture
                     </div>
                     <div class="movingcard" onclick="window.location.href='products.php?category=Seasonal Items'">
+                        <img src="./STATIC/Images/seasonal.jpg" alt="" srcset="">
                         Seasonal Items
                     </div>
                 </div>
