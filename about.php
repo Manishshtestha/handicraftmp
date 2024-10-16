@@ -6,16 +6,71 @@ include 'validate.php';
 $cookie_name = "return_to";
 $cookie_value = "about.php";
 $cookie_expiration = time() + 60 * 5;
-setcookie($cookie_name, $cookie_value, $cookie_expiration,'/');
+setcookie($cookie_name, $cookie_value, $cookie_expiration, '/');
+
+$_SESSION['page'] = 'about';
 
 $obj = new Query();
 $val = new Validate();
+
 $artisans = $obj->selectAlltypeQ('users', 'user_type', 'artisan');
+if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+
+$profile = [
+    "phone" => "",
+    "address" => "",
+    "description" => "",
+    "profession" => ""
+];
+$profileErr = [
+    "phone" => "",
+    "address" => "",
+    "description" => "",
+    "profession" => ""
+];
+
 if (!empty($_POST)) {
     if (isset($_POST['contact'])) {
         $_SESSION['success'] = ['value' => '✅Message Sent Successfully!', 'timestamp' => time()];
     }
+    if (isset($_POST['updateProfile'])) {
+        $profileErr['phone'] = $val->vNumber($_POST['phone']);
+        $profileErr['address'] = $val->vName($_POST['address']);
+        $profileErr['description'] = $val->vName($_POST['description']);
+        $profileErr['profession'] = $val->vName($_POST['profession']);
 
+        $profile['phone'] = $_POST['phone'];
+        $profile['address'] = $_POST['address'];
+        $profile['description'] = $_POST['description'];
+        $profile['profession'] = $_POST['profession'];
+
+
+        if ($obj->duplicateEntry('users', 'phone', $profile['phone'])) {
+            $profileErr['phone'] = "Phone no. already exists";
+        }
+        $errorFree = ($profileErr['phone'] == '' && $profileErr['address'] == '' && $profileErr['description'] == '' && $profileErr['profession']);
+        if ($errorFree) {
+            $obj->updateQ('users', $profile, 'user_id', $_POST['user_id']);
+            $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
+        }
+    }
+    if (isset($_POST['becomeArtisan'])) {
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['invalid'] = ['value' => '❗Please Login First', 'timestamp' => time()];
+            header('Location: log_reg.php');
+        } else {
+            $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+            switch ($userType['user_type']) {
+                case 'artisan':
+                    $_SESSION['error'] = ['value' => '❌Already an Artisan', 'timestamp' => time()];
+                    break;
+                default:
+                    $usertyp = ['user_type' => 'artisan'];
+                    $obj->updateQ('users', $usertyp, 'user_id', $_SESSION['user_id']);
+                    $_SESSION['success'] = ['value' => '✅You Are now an Artisan', 'timestamp' => time()];
+            }
+        }
+    }
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
         if (!isset($_FILES['main_img']) || $_FILES['main_img']['error'] != 0) {
@@ -43,6 +98,13 @@ if (!empty($_POST)) {
     }
 }
 
+$errArr = array($profileErr['profession'], $profileErr['description'], $profileErr['address'], $profileErr['phone']);
+for ($i = 0; $i < count($errArr); $i++) {
+    if (!empty($errArr[$i])) {
+        $_SESSION['error'] = ['value' => "❌" . $errArr[$i], 'timestamp' => time()];
+        break;
+    }
+}
 $subtotal = 0;
 $tax = 0;
 $shipping = 0;
@@ -76,115 +138,9 @@ $total = $subtotal + $tax + $shipping;
     include 'notifications.php';
     include 'cart.php';
     include 'newProduct.php';
+    include 'updateProfile.php';
+    include 'navbar.php';
     ?>
-    <div class="navbar">
-        <div class="logo">
-            <img class="navbar-brand" src="./STATIC/Images/Logo.png" />
-        </div>
-        <div class="mid">
-            <ul class="top-row">
-                <div></div>
-                <div class="cent">
-                    <li class="nav-item active">
-                        <a href="index.php" class="nav-link"><span class="inner-link">Home</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="about.php" class="nav-link"><span class="inner-link">About</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="products.php" class="nav-link"><span class="inner-link">Products</span></a>
-                    </li>
-                </div>
-                <div></div>
-            </ul>
-        </div>
-        <div class="signup_logout">
-            <button class="btn" onclick="window.location.href='products.php?trigger=true'">
-                <span class="button_top">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-            </button>
-            <?php
-            if (isset($_SESSION['user_id'])) {
-                $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
-
-                switch ($userType['user_type']) {
-                    case 'artisan':
-                        echo "
-                        <button class='btn' onclick='showProductModal()'>
-                            <span class='button_top'><i class='fa-solid fa-plus'></i></span>
-                        </button>
-                    ";
-                        break;
-                    default:
-                        echo "
-                        <button onclick='showCartModal()' class='btn btn-fw'>
-                            <span class='button_top'><i class='fa-solid fa-cart-shopping'></i> Cart</span>
-                        </button>
-                    ";
-                }
-            } else {
-                echo "
-                <button onclick='showCartModal()' class='btn'>
-                    <span class='button_top'><i class='fa-solid fa-cart-shopping'></i></span>
-                </button>
-            ";
-            }
-            ?>
-            <div class="dropdown2">
-                <?php
-                if (isset($_SESSION['user_id'])) {
-                ?>
-                    <button class="dropdown-btn btn" id="dropdownMenuBtn">
-                        <span class="button_top">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                    </button>
-                <?php
-                } else {
-                ?>
-                    <a href="log_reg.php">
-                        <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                        <button class="btn" title="Signin">
-                            <span class="button_top"><i class="fa-solid fa-right-to-bracket"></i>
-                            </span>
-                        </button>
-                    </a>
-                <?php
-                }
-                ?>
-                <div class="dropdown-content2" id="dropMenu">
-                    <?php
-                    if (isset($_SESSION['user_id'])) {
-                        $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
-                        if ($userType['user_type'] == 'artisan') {
-                    ?>
-                            <!-- <a href="addProduct.php"> -->
-                            <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
-                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i>
-                                </span>
-                            </button>
-                            <!-- </a> -->
-                    <?php }
-                    } ?>
-                    <?php if (isset($_SESSION['user_id'])) { ?>
-                        <a href="">
-                            <button class="btn btn-fw" title="Update Profile">
-                                <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
-                            </button>
-                        </a>
-                        <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
-                            <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
-                            <button class="btn btn-fw" title="Logout">
-                                <span class="button_top"><i class="fa-solid fa-right-from-bracket"></i>
-                                </span>
-                            </button>
-                        </a>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-    </div>
     <div id="about">
         <div id="abtsec1">
             <div class="left">

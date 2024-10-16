@@ -4,16 +4,69 @@ include 'query.php';
 include 'validate.php';
 
 $cookie_name = "return_to";
-$cookie_value = "products.php";
+$cookie_value = "checkout.php";
 $cookie_expiration = time() + 60 * 5;
-setcookie($cookie_name, $cookie_value, $cookie_expiration,'/');
+setcookie($cookie_name, $cookie_value, $cookie_expiration, '/');
 
 $obj = new Query();
 $val = new Validate();
 $searchKeyword = '';
 $products = $obj->selectAllQ('products');
+$noOfProducts = $obj->numQ('products');
+if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+
+$profile = [
+    "phone" => "",
+    "address" => "",
+    "description" => "",
+    "profession" => ""
+];
+$profileErr = [
+    "phone" => "",
+    "address" => "",
+    "description" => "",
+    "profession" => ""
+];
 
 if (!empty($_POST)) {
+    if (isset($_POST['becomeArtisan'])) {
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['invalid'] = ['value' => '❗Please Login First', 'timestamp' => time()];
+            header('Location: log_reg.php');
+        } else {
+            $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+            switch ($userType['user_type']) {
+                case 'artisan':
+                    $_SESSION['error'] = ['value' => '❌Already an Artisan', 'timestamp' => time()];
+                    break;
+                default:
+                    $usertyp = ['user_type' => 'artisan'];
+                    $obj->updateQ('users', $usertyp, 'user_id', $_SESSION['user_id']);
+                    $_SESSION['success'] = ['value' => '✅You Are now an Artisan', 'timestamp' => time()];
+            }
+        }
+    }
+    if (isset($_POST['updateProfile'])) {
+        $profileErr['phone'] = $val->vNumber($_POST['phone']);
+        $profileErr['address'] = $val->vName($_POST['address']);
+        $profileErr['description'] = $val->vName($_POST['description']);
+        $profileErr['profession'] = $val->vName($_POST['profession']);
+
+        $profile['phone'] = $_POST['phone'];
+        $profile['address'] = $_POST['address'];
+        $profile['description'] = $_POST['description'];
+        $profile['profession'] = $_POST['profession'];
+
+
+        if ($obj->duplicateEntry('users', 'phone', $profile['phone'])) {
+            $profileErr['phone'] = "Phone no. already exists";
+        }
+        $errorFree = ($profileErr['phone'] == '' && $profileErr['address'] == '' && $profileErr['description'] == '' && $profileErr['profession']);
+        if ($errorFree) {
+            $obj->updateQ('users', $profile, 'user_id', $_POST['user_id']);
+            $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
+        }
+    }
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
         if (!isset($_FILES['main_img']) || $_FILES['main_img']['error'] != 0) {
@@ -101,6 +154,14 @@ if (!empty($_GET)) {
     $products = $obj->executeQ($sql);
 }
 
+$errArr = array($profileErr['profession'], $profileErr['description'], $profileErr['address'], $profileErr['phone']);
+for ($i = 0; $i < count($errArr); $i++) {
+    if (!empty($errArr[$i])) {
+        $_SESSION['error'] = ['value' => "❌" . $errArr[$i], 'timestamp' => time()];
+        break;
+    }
+}
+
 $subtotal = 0;
 $tax = 0;
 $shipping = 0;
@@ -112,7 +173,6 @@ if (isset($_SESSION['cart'])) {
     $shipping = count(value: $_SESSION['cart']) * 90;
 }
 $total = $subtotal + $tax + $shipping;
-$noOfProducts = $obj->numQ('products');
 ?>
 
 <!DOCTYPE html>
@@ -134,6 +194,7 @@ $noOfProducts = $obj->numQ('products');
     include 'notifications.php';
     include 'cart.php';
     include 'newProduct.php';
+    include 'updateProfile.php';
     ?>
     <div class="navbar">
         <div class="logo">
@@ -143,13 +204,13 @@ $noOfProducts = $obj->numQ('products');
             <ul class="top-row">
                 <div></div>
                 <div class="cent">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a href="index.php" class="nav-link"><span class="inner-link">Home</span></a>
                     </li>
                     <li class="nav-item">
                         <a href="about.php" class="nav-link"><span class="inner-link">About</span></a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a href="products.php" class="nav-link"><span class="inner-link">Products</span></a>
                     </li>
                 </div>
@@ -157,11 +218,49 @@ $noOfProducts = $obj->numQ('products');
             </ul>
         </div>
         <div class="signup_logout">
-            <button class="btn" onclick="window.location.href='products.php?trigger=true'">
-                <span class="button_top">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-            </button>
+            <!-- <button onclick="showLoginModal();">Login</button> -->
+            <div class="dropdown">
+                <button class="btn" id="dropdownButtonSearch">
+                    <span class="button_top">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </button>
+
+                <div class="dropdown-content search" id="Search">
+                    <div class="searchContent">
+                        <form action="" method="GET" id="searchForm">
+                            <input class="searchbar" placeholder="Search a product" name="keyword" type="text" value="<?php echo $searchKeyword; ?>" />
+                            <div class="filters">
+                                <div class="filter">
+                                    <label>
+                                        <span>Category:</span>
+                                        <select name="category">
+                                            <option value="" disabled selected>--Select Category--</option>
+                                            <option value="Textile and Fiber Arts">Textile and Fiber Arts</option>
+                                            <option value="Home and Living">Home and Living</option>
+                                            <option value="Craft Supplies">Craft Supplies</option>
+                                            <option value="Glass Art">Glass Art</option>
+                                            <option value="Painting and Drawing">Painting and Drawing</option>
+                                            <option value="Sculpture">Sculpture</option>
+                                            <option value="Seasonal Items">Seasonal Items</option>
+                                        </select>
+                                    </label>
+                                    <label class="min-price-slider" style="width: 190px;">
+                                        <span style="text-align:center;">Min Price:</span>
+                                        <input type="range" id="min-price-slider" name="min_price" min="0" max="100000" value="0" step="1000">
+                                        <output id="min-price-output">0</output>
+                                    </label>
+                                </div>
+                                <button style="margin-top:5px;" class="btn" type="submit">
+                                    <span class="button_top">
+                                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <?php
             if (isset($_SESSION['user_id'])) {
                 $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
@@ -226,11 +325,9 @@ $noOfProducts = $obj->numQ('products');
                     <?php }
                     } ?>
                     <?php if (isset($_SESSION['user_id'])) { ?>
-                        <a href="">
-                            <button class="btn btn-fw" title="Update Profile">
-                                <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
-                            </button>
-                        </a>
+                        <button onclick="showProfileModal()" class="btn btn-fw" title="Update Profile">
+                            <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
+                        </button>
                         <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                             <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
                             <button class="btn btn-fw" title="Logout">
@@ -244,7 +341,7 @@ $noOfProducts = $obj->numQ('products');
         </div>
     </div>
     <div class="container" style="display:flex;justify-content:center;">
-        <button style="margin-top:5px;width:150px;top:25px;position:sticky;transform:translateX(550px);z-index:100000;background:none;color:aliceblue;border:1px solid aliceblue;" id="toggleView">
+        <button style="margin-top:5px;width:150px;top:25px;position:sticky;transform:translateX(550px);z-index:1000;background:none;color:aliceblue;border:1px solid aliceblue;" id="toggleView">
             <span class="button_top">
                 Change View Mode
             </span>
@@ -255,7 +352,7 @@ $noOfProducts = $obj->numQ('products');
                 if (!empty($products)) {
                     if (count($products) >= 3) {
                         foreach (array_slice($products, 0, $noOfProducts) as $product) { ?>
-                            <div class="item">
+                            <div class="item <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'grayed'?>">
                                 <img src="./uploads/<?php echo $product['main_img']; ?>">
                                 <div class="introduce">
                                     <div class="title"><?php $product['product_name'] ?></div>
@@ -286,7 +383,7 @@ $noOfProducts = $obj->numQ('products');
                                             <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
                                             <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
                                             <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
-                                            <button class="btn" name="add_to_cart">
+                                            <button class="btn" name="add_to_cart" <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled'?>>
                                                 <span class="button_top">
                                                     ADD TO CART
                                                 </span>
@@ -323,7 +420,7 @@ $noOfProducts = $obj->numQ('products');
             <?php
             if (!empty($products)) {
                 foreach (array_slice($products, 0, 10) as $product) { ?>
-                    <div class="card">
+                    <div class="card <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'grayed'?>">
                         <div class="card-img">
                             <img src="./uploads/<?php echo $product['main_img'] ?>" alt="" srcset="" width="200px">
                         </div>
@@ -338,7 +435,7 @@ $noOfProducts = $obj->numQ('products');
                                 <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
                                 <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
                                 <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
-                                <button class="btn" name="add_to_cart">
+                                <button class="btn" name="add_to_cart" <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled'?>>
                                     <span class="button_top">
                                         <i class="fa-solid fa-cart-plus"></i>
                                     </span>

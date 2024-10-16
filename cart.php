@@ -49,7 +49,9 @@
                     <h3><span>Shipping</span><span>Rs. <?php echo $shipping ?></span></h3>
                     <hr>
                     <p><span>Total</span><span>Rs. <?php echo $total ?></span></p>
-                    <button style="margin-left: 75px;margin-top:5px;"class="btn btn-fw" onclick="<?php if($total>1)echo"window.location.href='payment.php'"; else echo "alert('No Items in the Cart to Checkout')"?>" >
+                    <button style="margin-left: 75px;margin-top:5px;" class="btn btn-fw"
+                        onclick="<?php if ($total > 1) echo "window.location.href='checkout.php'";
+                                    else echo "alert('No Items in the Cart to Checkout')" ?>">
                         <span class="button_top">
                             Checkout
                         </span>
