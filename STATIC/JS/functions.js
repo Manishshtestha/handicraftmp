@@ -1,5 +1,6 @@
 var cartModal = document.getElementById("myCart");
 var productModal = document.getElementById("addProduct");
+var profileModal = document.getElementById("updateProfile");
 // Get the <span> element that closes the modal
 
 // When the user clicks on the button, open the modal
@@ -9,6 +10,9 @@ function showCartModal() {
 function showProductModal() {
 	productModal.style.display = "block";
 }
+function showProfileModal() {
+	profileModal.style.display = "block";
+}
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -17,6 +21,9 @@ window.onclick = function (event) {
 	}
 	if (event.target == productModal) {
 		removeModal("product");
+	}
+	if (event.target == profileModal) {
+		removeModal("profile");
 	}
 };
 
@@ -34,6 +41,13 @@ function removeModal(msg) {
 			setTimeout(() => {
 				cartModal.classList.remove("exit");
 				cartModal.style.display = "none";
+			}, 200);
+			break;
+		case "profile":
+			profileModal.classList.add("exit");
+			setTimeout(() => {
+				profileModal.classList.remove("exit");
+				profileModal.style.display = "none";
 			}, 200);
 			break;
 		default:
@@ -114,12 +128,11 @@ document.querySelectorAll(buttonClass).forEach((btn) => {
 	});
 });
 
-document
-	.getElementById("toggleView")
-	.addEventListener("click", function () {
-		var carousel = document.getElementById("Carousel");
-		var gridview = document.getElementById("GridView");
-		carousel.style.display =
-			carousel.style.display === "block" ? "none" : "block";
-		gridview.style.display = gridview.style.display === "flex" ? "none" : "flex";
-	})
+document.getElementById("toggleView").addEventListener("click", function () {
+	var carousel = document.getElementById("Carousel");
+	var gridview = document.getElementById("GridView");
+	carousel.style.display =
+		carousel.style.display === "block" ? "none" : "block";
+	gridview.style.display =
+		gridview.style.display === "flex" ? "none" : "flex";
+});

@@ -44,9 +44,7 @@ class Validate
     }
     public function vNumber($num)
     {
-        if (!is_numeric($num)) {
-            return "The Contact field must contain only numbers.";
-        } elseif (strlen($num) != 10) {
+if (strlen($num) != 10) {
             return "The number must have 10 digits";
         } else {
             return "";     //return empty string if all conditions met
@@ -79,10 +77,11 @@ class Validate
             return "";   // Return empty string if all conditions are met
         }
     }
-    public function vCPassword($pass,$cpass){
-        if($pass != $cpass){
+    public function vCPassword($pass, $cpass)
+    {
+        if ($pass != $cpass) {
             return "Passwords do not match.";
-        }else{
+        } else {
             return "";
         }
     }
@@ -92,17 +91,15 @@ class Validate
         $length = strlen($address);
         if ($length <= 0) {
             return "Address cannot be empty";
-        }else if($length > 256){
+        } else if ($length > 256) {
             return "Address too long";
         } else {
             return "";   //return empty string if all conditions met
         }
     }
 
-    public function vProduct($prod_name,$prod_price,$prod_desc,$prod_category)
+    public function vProduct($prod_name, $prod_price, $prod_desc, $prod_category)
     {
-        
-
         if (empty($prod_name)) {
             return "❌Product name cannot be empty.";
         } elseif (strlen($prod_name) <= 3) {
