@@ -27,10 +27,10 @@ if (!empty($_POST)) {
     // echo $password;die;
     $userlogin = $obj->login('users', $email, $password);
     if ($userlogin != false) {
-      session_destroy();
-      session_start();
+      // session_destroy();
+      // session_start();
       $_SESSION['user_id'] = $userlogin['user_id'];
-      $_SESSION['logged_user'] = $userlogin['username'];
+      $_SESSION['username'] = $userlogin['username'];
       $_SESSION['success'] = ['value' => '✅Logged in Successfully!', 'timestamp' => time()];
       if (isset($_COOKIE['return_to'])) {
         header('Location: ' . $_COOKIE['return_to']);
