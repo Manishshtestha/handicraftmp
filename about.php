@@ -31,28 +31,17 @@ $profileErr = [
 
 if (!empty($_POST)) {
     if (isset($_POST['contact'])) {
+        //Code here ig you actually want to send
         $_SESSION['success'] = ['value' => '✅Message Sent Successfully!', 'timestamp' => time()];
     }
     if (isset($_POST['updateProfile'])) {
-        $profileErr['phone'] = $val->vNumber($_POST['phone']);
-        $profileErr['address'] = $val->vName($_POST['address']);
-        $profileErr['description'] = $val->vName($_POST['description']);
-        $profileErr['profession'] = $val->vName($_POST['profession']);
-
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
         $profile['description'] = $_POST['description'];
         $profile['profession'] = $_POST['profession'];
 
-
-        if ($obj->duplicateEntry('users', 'phone', $profile['phone'])) {
-            $profileErr['phone'] = "Phone no. already exists";
-        }
-        $errorFree = ($profileErr['phone'] == '' && $profileErr['address'] == '' && $profileErr['description'] == '' && $profileErr['profession']);
-        if ($errorFree) {
-            $obj->updateQ('users', $profile, 'user_id', $_POST['user_id']);
-            $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
-        }
+        $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
+        $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }
     if (isset($_POST['becomeArtisan'])) {
         if (!isset($_SESSION['user_id'])) {

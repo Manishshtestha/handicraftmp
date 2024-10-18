@@ -3,8 +3,8 @@ session_start();
 include 'query.php';
 include 'validate.php';
 
-$cookie_name = "return_to";
-$cookie_value = "homepage.php";
+$cookie_name = 'return_to';
+$cookie_value = 'homepage.php';
 $cookie_expiration = time() + 60 * 5;
 setcookie($cookie_name, $cookie_value, $cookie_expiration, '/');
 
@@ -16,19 +16,14 @@ $_SESSION['page'] = 'homepage';
 $artisans = $obj->selectAlltypeQ('users', 'user_type', 'artisan');
 $products = $obj->selectAllQ('products');
 $noOfProducts = $obj->numQ('products');
+
 if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
 
 $profile = [
-    "phone" => "",
-    "address" => "",
-    "description" => "",
-    "profession" => ""
-];
-$profileErr = [
-    "phone" => "",
-    "address" => "",
-    "description" => "",
-    "profession" => ""
+    'phone' => '',
+    'address' => '',
+    'description' => '',
+    'profession' => ''
 ];
 
 if (!empty($_POST)) {
@@ -50,33 +45,21 @@ if (!empty($_POST)) {
         }
     }
     if (isset($_POST['updateProfile'])) {
-        $profileErr['phone'] = $val->vNumber($_POST['phone']);
-        $profileErr['address'] = $val->vName($_POST['address']);
-        $profileErr['description'] = $val->vName($_POST['description']);
-        $profileErr['profession'] = $val->vName($_POST['profession']);
-
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
         $profile['description'] = $_POST['description'];
         $profile['profession'] = $_POST['profession'];
 
-
-        if ($obj->duplicateEntry('users', 'phone', $profile['phone'])) {
-            $profileErr['phone'] = "Phone no. already exists";
-        }
-        $errorFree = ($profileErr['phone'] == '' && $profileErr['address'] == '' && $profileErr['description'] == '' && $profileErr['profession']);
-        if ($errorFree) {
-            // $obj->updateQ('users', $profile, 'user_id', $_POST['user_id']);
-            $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
-        }
+        $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
+        $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
         if (!isset($_FILES['main_img']) || $_FILES['main_img']['error'] != 0) {
-            $error = "No image was selected.";
+            $error = 'No image was selected.';
         }
         switch ($error) {
-            case "":
+            case '':
                 $obj->insertQ('products', $_POST);
                 $_SESSION['success'] = ['value' => '✅Product Added Successfully', 'timestamp' => time()];
                 break;
@@ -98,13 +81,6 @@ if (!empty($_POST)) {
     }
 }
 
-$errArr = array($profileErr['profession'], $profileErr['description'], $profileErr['address'], $profileErr['phone']);
-for ($i = 0; $i < count($errArr); $i++) {
-    if (!empty($errArr[$i])) {
-        $_SESSION['error'] = ['value' => "❌" . $errArr[$i], 'timestamp' => time()];
-        break;
-    }
-}
 
 $subtotal = 0;
 $tax = 0;

@@ -4,14 +4,14 @@ include 'query.php';
 include 'validate.php';
 
 $cookie_name = "return_to";
-$cookie_value = "checkout.php";
+$cookie_value = "products.php";
 $cookie_expiration = time() + 60 * 5;
 setcookie($cookie_name, $cookie_value, $cookie_expiration, '/');
 
 $obj = new Query();
 $val = new Validate();
 $searchKeyword = '';
-$products = $obj->selectAllQ('products');
+$products = $obj->selectAllTypeQ('products','availability','1');
 $noOfProducts = $obj->numQ('products');
 if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
 
@@ -47,25 +47,13 @@ if (!empty($_POST)) {
         }
     }
     if (isset($_POST['updateProfile'])) {
-        $profileErr['phone'] = $val->vNumber($_POST['phone']);
-        $profileErr['address'] = $val->vName($_POST['address']);
-        $profileErr['description'] = $val->vName($_POST['description']);
-        $profileErr['profession'] = $val->vName($_POST['profession']);
-
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
         $profile['description'] = $_POST['description'];
         $profile['profession'] = $_POST['profession'];
 
-
-        if ($obj->duplicateEntry('users', 'phone', $profile['phone'])) {
-            $profileErr['phone'] = "Phone no. already exists";
-        }
-        $errorFree = ($profileErr['phone'] == '' && $profileErr['address'] == '' && $profileErr['description'] == '' && $profileErr['profession']);
-        if ($errorFree) {
-            $obj->updateQ('users', $profile, 'user_id', $_POST['user_id']);
-            $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
-        }
+        $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
+        $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
@@ -318,7 +306,11 @@ $total = $subtotal + $tax + $shipping;
                     ?>
                             <!-- <a href="addProduct.php"> -->
                             <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
-                                <span class="button_top"><i class="fa-solid fa-cart-shopping"></i>
+                                <span class="button_top">My Cart
+                                </span>
+                            </button>
+                            <button onclick="showProductsManagerModal()" class="btn btn-fw" title="Manage my Products">
+                                <span class="button_top">Manage Products
                                 </span>
                             </button>
                             <!-- </a> -->
@@ -326,12 +318,12 @@ $total = $subtotal + $tax + $shipping;
                     } ?>
                     <?php if (isset($_SESSION['user_id'])) { ?>
                         <button onclick="showProfileModal()" class="btn btn-fw" title="Update Profile">
-                            <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
+                            <span class="button_top">Update Profile</span>
                         </button>
                         <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                             <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
                             <button class="btn btn-fw" title="Logout">
-                                <span class="button_top"><i class="fa-solid fa-right-from-bracket"></i>
+                                <span class="button_top">Logout</i>
                                 </span>
                             </button>
                         </a>
@@ -352,7 +344,7 @@ $total = $subtotal + $tax + $shipping;
                 if (!empty($products)) {
                     if (count($products) >= 3) {
                         foreach (array_slice($products, 0, $noOfProducts) as $product) { ?>
-                            <div class="item <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'grayed'?>">
+                            <div class="item">
                                 <img src="./uploads/<?php echo $product['main_img']; ?>">
                                 <div class="introduce">
                                     <div class="title"><?php $product['product_name'] ?></div>
@@ -383,7 +375,7 @@ $total = $subtotal + $tax + $shipping;
                                             <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
                                             <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
                                             <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
-                                            <button class="btn" name="add_to_cart" <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled'?>>
+                                            <button class="btn" name="add_to_cart" <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled' ?>>
                                                 <span class="button_top">
                                                     ADD TO CART
                                                 </span>
@@ -420,7 +412,7 @@ $total = $subtotal + $tax + $shipping;
             <?php
             if (!empty($products)) {
                 foreach (array_slice($products, 0, 10) as $product) { ?>
-                    <div class="card <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'grayed'?>">
+                    <div class="card <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'grayed' ?>">
                         <div class="card-img">
                             <img src="./uploads/<?php echo $product['main_img'] ?>" alt="" srcset="" width="200px">
                         </div>
@@ -435,7 +427,7 @@ $total = $subtotal + $tax + $shipping;
                                 <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
                                 <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
                                 <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
-                                <button class="btn" name="add_to_cart" <?php if($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled'?>>
+                                <button class="btn" name="add_to_cart" <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled' ?>>
                                     <span class="button_top">
                                         <i class="fa-solid fa-cart-plus"></i>
                                     </span>
