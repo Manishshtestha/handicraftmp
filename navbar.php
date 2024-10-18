@@ -82,7 +82,11 @@
                 ?>
                         <!-- <a href="addProduct.php"> -->
                         <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
-                            <span class="button_top"><i class="fa-solid fa-cart-shopping"></i>
+                            <span class="button_top">My Cart
+                            </span>
+                        </button>
+                        <button onclick="showProductsManagerModal()" class="btn btn-fw" title="Manage my Products">
+                            <span class="button_top">Manage Products
                             </span>
                         </button>
                         <!-- </a> -->
@@ -91,13 +95,13 @@
                 <?php if (isset($_SESSION['user_id'])) { ?>
 
                     <button onclick="showProfileModal()" class="btn btn-fw" title="Update Profile">
-                        <span class="button_top"><i class="fa-solid fa-user-gear"></i></span>
+                        <span class="button_top">Update Profile</i></span>
                     </button>
 
                     <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                         <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
                         <button class="btn btn-fw" title="Logout">
-                            <span class="button_top"><i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="button_top">Logout</i>
                             </span>
                         </button>
                     </a>

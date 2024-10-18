@@ -131,9 +131,9 @@ class Query extends Database
         return $record;
     }
     public function updateQ($table, $updateData, $pk, $id)
-    {
+    {   
         foreach ($updateData as $key => $value) {
-            $updateData[$key] = " $key = '" . $value . "' ";
+            $updateData[$key] = "{$key} = '{$value}'";
         }
         $updatesql = implode(",", $updateData);
         $sql = "UPDATE $table SET $updatesql WHERE $pk ='$id'";
