@@ -81,7 +81,6 @@ if (!empty($_POST)) {
     }
 }
 
-
 $subtotal = 0;
 $tax = 0;
 $shipping = 0;
@@ -93,6 +92,41 @@ if (isset($_SESSION['cart'])) {
     $shipping = count(value: $_SESSION['cart']) * 90;
 }
 $total = $subtotal + $tax + $shipping;
+
+if (isset($_SESSION['status']) && !empty($_SESSION['cart'])) {
+    try {
+        $orderInsertData = [
+            'buyer_id' => $_SESSION['user_id'],
+            'order_date' => date('Y-m-d'),
+            'total_amount' => isset($total) ? $total : 0,
+            'status' => $_SESSION['status'],
+            '0' => 'null'
+        ];
+        $obj->insertQ('orders', $orderInsertData);
+        $orderId = $obj->lastIndex('orders', 'order_id');
+        foreach ($_SESSION['cart'] as $cartItem) {
+            if ($_SESSION['status'] == 'success') {
+                $obj->updateQ('products', ['availability' => 0], 'product_id', $cartItem['product_id']);
+            }
+            $orderItemInsertData = [
+                'order_id' => $orderId,
+                'product_id' => $cartItem['product_id'],
+                'price' => $cartItem['price'],
+                '0' => 'null'
+            ];
+            // var_dump($orderItemInsertData);die;
+            $obj->insertQ('order_items', $orderItemInsertData);
+        }
+        unset($_SESSION['cart']);
+        unset($_SESSION['status']);
+        $_SESSION['success'] = ['value' => 'Order processed successfully', 'timestamp' => time()];
+    } catch (Exception $e) {
+        $_SESSION['error'] = ['value' => 'Error processing order.' . $e->getMessage(), 'timestamp' => time()];
+    }
+} else {
+    $_SESSION['error'] = ['value' => 'Cart is empty or status is not set', 'timestamp' => time()];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
