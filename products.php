@@ -11,7 +11,7 @@ setcookie($cookie_name, $cookie_value, $cookie_expiration, '/');
 $obj = new Query();
 $val = new Validate();
 $searchKeyword = '';
-$products = $obj->selectAllTypeQ('products','availability','1');
+$products = $obj->selectAllTypeQ('products', 'availability', '1');
 $noOfProducts = $obj->numQ('products');
 if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
 
@@ -46,6 +46,7 @@ if (!empty($_POST)) {
             }
         }
     }
+    
     if (isset($_POST['updateProfile'])) {
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
@@ -55,6 +56,7 @@ if (!empty($_POST)) {
         $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
         $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }
+
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
         if (!isset($_FILES['main_img']) || $_FILES['main_img']['error'] != 0) {
@@ -142,13 +144,6 @@ if (!empty($_GET)) {
     $products = $obj->executeQ($sql);
 }
 
-$errArr = array($profileErr['profession'], $profileErr['description'], $profileErr['address'], $profileErr['phone']);
-for ($i = 0; $i < count($errArr); $i++) {
-    if (!empty($errArr[$i])) {
-        $_SESSION['error'] = ['value' => "❌" . $errArr[$i], 'timestamp' => time()];
-        break;
-    }
-}
 
 $subtotal = 0;
 $tax = 0;
