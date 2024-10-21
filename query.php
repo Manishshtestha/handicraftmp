@@ -158,4 +158,10 @@ class Query extends Database
         $rows = $this->conn->query($sql);
         return $rows->num_rows;
     }
+    public function lastIndex($table,$pk){
+        $sql = "SELECT MAX($pk) as max FROM $table";
+        $res = $this->conn->query($sql);
+        $value = mysqli_fetch_assoc($res);
+        return $value['max'];
+    }
 }
