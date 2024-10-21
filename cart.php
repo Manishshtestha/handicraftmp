@@ -8,14 +8,12 @@
                     <?php
                     foreach ($_SESSION['cart'] as $key => $product) { ?>
                         <div class="cartItem">
-
                             <div class="img">
                                 <img src="./uploads/<?php echo $product['main_img'] ?>" alt="" srcset="" width="100">
                             </div>
                             <div class="details">
                                 <h3 style="margin-top:20px;"><?php echo $product['product_name'] ?></h3>
                                 <p>Listed on: <?php echo date('Y-m-d', strtotime($product['created_at'])); ?></p>
-
                             </div>
                             <div class="price">
                                 <form action="" method="post">

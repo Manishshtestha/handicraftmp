@@ -44,7 +44,7 @@ class Validate
     }
     public function vNumber($num)
     {
-if (strlen($num) != 10) {
+        if (strlen($num) != 10) {
             return "The number must have 10 digits";
         } else {
             return "";     //return empty string if all conditions met

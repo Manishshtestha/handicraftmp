@@ -43,6 +43,7 @@ if (!empty($_POST)) {
         $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
         $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }
+
     if (isset($_POST['becomeArtisan'])) {
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['invalid'] = ['value' => '❗Please Login First', 'timestamp' => time()];
@@ -60,6 +61,7 @@ if (!empty($_POST)) {
             }
         }
     }
+
     if (isset($_POST['addProduct'])) {
         $error = $val->vProduct($_POST['product_name'], $_POST['price'], $_POST['description'], $_POST['category']);
         if (!isset($_FILES['main_img']) || $_FILES['main_img']['error'] != 0) {
@@ -74,6 +76,7 @@ if (!empty($_POST)) {
                 $_SESSION['invalid'] = ['value' => $error, 'timestamp' => time()];
         }
     }
+
     if (isset($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $key => $product) {
             if (isset($_POST['rem' . $key])) {
@@ -87,13 +90,6 @@ if (!empty($_POST)) {
     }
 }
 
-$errArr = array($profileErr['profession'], $profileErr['description'], $profileErr['address'], $profileErr['phone']);
-for ($i = 0; $i < count($errArr); $i++) {
-    if (!empty($errArr[$i])) {
-        $_SESSION['error'] = ['value' => "❌" . $errArr[$i], 'timestamp' => time()];
-        break;
-    }
-}
 $subtotal = 0;
 $tax = 0;
 $shipping = 0;
