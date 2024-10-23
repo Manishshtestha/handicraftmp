@@ -1,6 +1,8 @@
 var cartModal = document.getElementById("myCart");
 var productModal = document.getElementById("addProduct");
 var profileModal = document.getElementById("updateProfile");
+var productManageModal = document.getElementById("manageProduct");
+var ordersModal = document.getElementById("myOrders");
 // Get the <span> element that closes the modal
 
 // When the user clicks on the button, open the modal
@@ -13,6 +15,12 @@ function showProductModal() {
 function showProfileModal() {
 	profileModal.style.display = "block";
 }
+function showManageProductModal(){
+	productManageModal.style.display = "block";
+}
+function showOrderModal(){
+	ordersModal.style.display = "block";
+}
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -24,6 +32,12 @@ window.onclick = function (event) {
 	}
 	if (event.target == profileModal) {
 		removeModal("profile");
+	}
+	if (event.target == productManageModal) {
+		removeModal("manageProduct");
+	}
+	if (event.target == ordersModal) {
+		removeModal("myOrders");
 	}
 };
 
@@ -48,6 +62,20 @@ function removeModal(msg) {
 			setTimeout(() => {
 				profileModal.classList.remove("exit");
 				profileModal.style.display = "none";
+			}, 200);
+			break;
+		case "manageProduct":
+			productManageModal.classList.add("exit");
+			setTimeout(() => {
+				productManageModal.classList.remove("exit");
+				productManageModal.style.display = "none";
+			}, 200);
+			break;
+		case "myOrders":
+			ordersModal.classList.add("exit");
+			setTimeout(() => {
+				ordersModal.classList.remove("exit");
+				ordersModal.style.display = "none";
 			}, 200);
 			break;
 		default:
