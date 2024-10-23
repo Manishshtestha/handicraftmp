@@ -81,21 +81,26 @@
                     if ($userType['user_type'] == 'artisan') {
                 ?>
                         <!-- <a href="addProduct.php"> -->
-                        <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
-                            <span class="button_top">My Cart
-                            </span>
-                        </button>
-                        <button onclick="showProductsManagerModal()" class="btn btn-fw" title="Manage my Products">
+                        <button onclick="showManageProductModal()" class="btn btn-fw" title="Manage my Products">
                             <span class="button_top">Manage Products
                             </span>
                         </button>
                         <!-- </a> -->
+                        <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
+                            <span class="button_top">My Cart
+                            </span>
+                        </button>
                 <?php }
                 } ?>
                 <?php if (isset($_SESSION['user_id'])) { ?>
 
+
                     <button onclick="showProfileModal()" class="btn btn-fw" title="Update Profile">
                         <span class="button_top">Update Profile</i></span>
+                    </button>
+
+                    <button onclick="showOrderModal()" class="btn btn-fw" title="Update Profile">
+                        <span class="button_top">My Orders</i></span>
                     </button>
 
                     <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">

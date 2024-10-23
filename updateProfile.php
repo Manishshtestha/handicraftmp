@@ -1,12 +1,12 @@
 <div class="modal" id="updateProfile">
     <div class="modal_content">
-        <div class="cont">
+        <div class="cart-cont cont" style="flex-direction: column;">
             <div style="margin-top:5px;display:flex;justify-content:space-evenly;align-items:center;">
                 <a class="Cancel" style="opacity:0">X</a>
                 <h2 style="color:aliceblue;">Profile Update Form</h2>
                 <a onclick="removeModal('profile')" class="close">X</a>
             </div>
-            <div class="form-content">
+            <div class="form-content cartProducts" style="width:100%;">
                 <form action="" method="post">
                     <div class="top_ui" style="display:flex;gap:10px;flex-wrap:wrap">
                         <input type="text" name="user_id" id="" value="<?= $_SESSION['user_id'] ?>" hidden>

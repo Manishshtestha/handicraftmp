@@ -1,7 +1,7 @@
 <div class="modal" id="myCart">
     <div class="modal_content">
         <div class="cart-cont">
-            <div id="cartProducts">
+            <div class="cartProducts">
                 <?php if (isset($_SESSION['cart'])) {
                 ?>
                     <h1 style="display:flex;justify-content:space-around;color:aliceblue;">Your product list <span><?php echo count($_SESSION['cart']) . " items" ?></span></h1>

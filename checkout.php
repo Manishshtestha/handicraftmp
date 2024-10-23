@@ -1,6 +1,8 @@
 <?php
 session_start();
-
+include('query.php');
+$obj = new Query();
+$orderno = $obj->lastIndex('orders','order_id') + 1;
 $cookie_name = "return_to";
 $cookie_value = "checkout.php";
 $cookie_expiration = time() + 60 * 5;
@@ -115,6 +117,7 @@ $sig = hash_hmac(algo: 'sha256', data: $message, key: $secretKey, binary: true);
 
         <div class="cont-left">
             <h2>Order Details</h2>
+            <h3>Order no: <?php echo $orderno;?></h3>
             <hr>
             <div class="list_view">
                 <?php foreach ($_SESSION['cart'] as $key => $product) { ?>

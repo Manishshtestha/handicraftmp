@@ -139,13 +139,13 @@
 	animation-iteration-count: 1;
 	border: 2px solid aliceblue;
 }
-.dropdown-content2 {
+.dropdown-content2{
 	display: none;
 	position: absolute;
 	background-color: rgba(25, 25, 25, 0.5);
 	backdrop-filter: blur(5px);
 	min-width: 210px;
-	z-index: 1;
+	z-index: 20000;
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;

@@ -131,7 +131,7 @@ body {
 	background: rgba(30, 32, 34, 0.5);
 	backdrop-filter: blur(7px);
 	border-radius: 10px;
-	border: 2px solid aliceblue;
+	/* border: 2px solid aliceblue; */
 	animation: slideDown 0.2s linear;
 
 	h1 {
@@ -627,7 +627,7 @@ body {
 	display: flex;
 	gap: 10px;
 	animation: slideDown 0.2s linear;
-	#cartProducts {
+	.cartProducts {
 		width: 65%;
 		height: 550px;
 		padding: 5px;
@@ -646,7 +646,7 @@ body {
 					text-align: justify;
 					font-size: 1em;
 					width: 100%;
-					height: 10vh;
+					/* height: 8vh; */
 					overflow: hidden;
 					text-overflow: ellipsis;
 				}
@@ -746,6 +746,37 @@ body {
 	}
 }
 
+.order{
+	width: 100%;
+	/* margin: 5px; */
+	border: 1px solid grey;
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.301);
+	color: aliceblue;
+	padding: 10px;
+	transition: max-height 0.5s ease-out;
+	.items{
+		display:flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		img{
+			width: 100px;
+		}
+		p{
+			margin-top: 5px;
+			padding: 5px;
+			border-radius: 10px;
+			border: 1px solid grey;
+			display: flex;
+			align-items: center;
+		}
+	}
+}
+
+.productList{
+	width: 100%;
+	display: flex;
+}
 @keyframes sliding {
 	10% {
 		transform: translateX(0%);

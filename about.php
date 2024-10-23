@@ -14,15 +14,14 @@ $obj = new Query();
 $val = new Validate();
 
 $artisans = $obj->selectAlltypeQ('users', 'user_type', 'artisan');
-if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+
+if (isset($_SESSION['user_id'])) {
+    $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+    $fetchOrder = $obj->selectAlltypeQ('orders', 'buyer_id', $_SESSION['user_id']);
+    $myProducts = $obj->selectAlltypeQ('products', 'artisan_id', $_SESSION['user_id']);
+}
 
 $profile = [
-    "phone" => "",
-    "address" => "",
-    "description" => "",
-    "profession" => ""
-];
-$profileErr = [
     "phone" => "",
     "address" => "",
     "description" => "",
@@ -125,6 +124,8 @@ $total = $subtotal + $tax + $shipping;
     include 'newProduct.php';
     include 'updateProfile.php';
     include 'navbar.php';
+    include 'manageProducts.php';
+    include 'orders.php';
     ?>
     <div id="about">
         <div id="abtsec1">

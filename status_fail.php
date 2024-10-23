@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION['status'] = 'fail';
+$_SESSION['status'] = 'pending';
 $_SESSION['error'] = ['value' => '❌Payment Failed','timestamp'=>time()];
 ?>
 <!DOCTYPE html>

@@ -1,12 +1,12 @@
 <div class="modal" id="addProduct">
     <div class="modal_content">
         <div class="cont">
-            <div style="margin-top:5px;display:flex;justify-content:space-evenly;align-items:center;">
+            <div style="margin:5px 0;display:flex;justify-content:space-evenly;align-items:center;">
                 <a class="Cancel" style="opacity:0">X</a>
                 <h2 style="color:aliceblue;">Product Adding Form</h2>
                 <a onclick="removeModal('product')" class="close">X</a>
             </div>
-            <div class="form-content">
+            <div class="form-content" style="border:1px solid grey; border-radius:10px;">
                 <form action="" method="post" enctype="multipart/form-data">
                     <div class="top_ui">
                         <div class="inputs">

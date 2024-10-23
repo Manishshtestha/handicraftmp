@@ -10,18 +10,18 @@ setcookie($cookie_name, $cookie_value, $cookie_expiration, '/');
 
 $obj = new Query();
 $val = new Validate();
+
 $searchKeyword = '';
 $products = $obj->selectAllTypeQ('products', 'availability', '1');
 $noOfProducts = $obj->numQ('products');
-if (isset($_SESSION['user_id'])) $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+
+if (isset($_SESSION['user_id'])) {
+    $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
+    $fetchOrder = $obj->selectAlltypeQ('orders', 'buyer_id', $_SESSION['user_id']);
+    $myProducts = $obj->selectAlltypeQ('products', 'artisan_id', $_SESSION['user_id']);
+}
 
 $profile = [
-    "phone" => "",
-    "address" => "",
-    "description" => "",
-    "profession" => ""
-];
-$profileErr = [
     "phone" => "",
     "address" => "",
     "description" => "",
@@ -46,7 +46,7 @@ if (!empty($_POST)) {
             }
         }
     }
-    
+
     if (isset($_POST['updateProfile'])) {
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
@@ -88,13 +88,13 @@ if (!empty($_POST)) {
                 $_SESSION['invalid'] = ['value' => '❗Product already in Cart', 'timestamp' => time()];
             }
         } else {
-            $session_cart = array(
+            $session_cart = [
                 'product_id' => $_POST['product_id'],
                 'product_name' => $_POST['product_name'],
                 'price' => $_POST['price'],
                 'main_img' => $_POST['main_img'],
                 'created_at' => $_POST['created_at']
-            );
+            ];
             $_SESSION['cart'][] = $session_cart;
             $_SESSION['success'] = ['value' => '✅Product added to Cart', 'timestamp' => time()];
         }
@@ -103,7 +103,7 @@ if (!empty($_POST)) {
     if (isset($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $key => $product) {
             if (isset($_POST['rem' . $key])) {
-                $_SESSION['success'] = ['value' => '✅Product removed to Cart', 'timestamp' => time()];
+                $_SESSION['success'] = ['value' => '✅Product removed from Cart', 'timestamp' => time()];
                 unset($_SESSION['cart'][$key]);
                 if (count($_SESSION['cart']) == 0) {
                     unset($_SESSION['cart']);
@@ -129,7 +129,7 @@ if (!empty($_GET)) {
     $category = $_GET['category'] ?? '';
     $min_price = isset($_GET['min_price']) ? floatval($_GET['min_price']) : 0;
     $rating = isset($_GET['rating']) ? intval($_GET['rating']) : 0;
-    $sql = "SELECT * FROM products WHERE ";
+    $sql = "SELECT * FROM products WHERE availability='1' AND ";
     $searchKeyword = $keyword;
     if (!empty($keyword)) {
         $sql .= "LOWER(product_name) LIKE LOWER('%{$keyword}%') AND ";
@@ -178,6 +178,8 @@ $total = $subtotal + $tax + $shipping;
     include 'cart.php';
     include 'newProduct.php';
     include 'updateProfile.php';
+    include 'manageProducts.php';
+    include 'orders.php';
     ?>
     <div class="navbar">
         <div class="logo">
@@ -299,22 +301,29 @@ $total = $subtotal + $tax + $shipping;
                         $userType = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
                         if ($userType['user_type'] == 'artisan') {
                     ?>
-                            <!-- <a href="addProduct.php"> -->
+                            <button onclick="showManageProductModal()" class="btn btn-fw" title="Manage my Products">
+                                <span class="button_top">Manage Products
+                                </span>
+                            </button>
+
                             <button onclick="showCartModal()" class="btn btn-fw" title="My Cart">
                                 <span class="button_top">My Cart
                                 </span>
                             </button>
-                            <button onclick="showProductsManagerModal()" class="btn btn-fw" title="Manage my Products">
-                                <span class="button_top">Manage Products
-                                </span>
-                            </button>
-                            <!-- </a> -->
+
                     <?php }
                     } ?>
                     <?php if (isset($_SESSION['user_id'])) { ?>
+
                         <button onclick="showProfileModal()" class="btn btn-fw" title="Update Profile">
                             <span class="button_top">Update Profile</span>
                         </button>
+
+                        <button onclick="showOrderModal()" class="btn btn-fw" title="Update Profile">
+                            <span class="button_top">My Orders</i></span>
+                        </button>
+
+
                         <a href="logout.php" onclick="return confirm('Are You sure you want to logout?');" class="logout">
                             <!-- <i class="fas fa-sign-out-alt"></i>&ensp;Logout -->
                             <button class="btn btn-fw" title="Logout">
@@ -322,6 +331,7 @@ $total = $subtotal + $tax + $shipping;
                                 </span>
                             </button>
                         </a>
+
                     <?php } ?>
                 </div>
             </div>
