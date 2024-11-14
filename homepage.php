@@ -52,9 +52,9 @@ if (!empty($_POST)) {
     if (isset($_POST['updateProfile'])) {
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
-        $profile['description'] = $_POST['description'];
+        $profile['description'] = str_replace("'","",$_POST['description']);
         $profile['profession'] = $_POST['profession'];
-
+ 
         $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
         $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }

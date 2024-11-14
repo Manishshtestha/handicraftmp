@@ -22,7 +22,7 @@
                             </label>
                             <label>
                                 <span>Description</span>
-                                <textarea name="description" rows="2"></textarea>
+                                <textarea name="description" rows="2" id="descField"></textarea>
                             </label>
                             <label>
                                 <span>Category:</span>

@@ -5,6 +5,7 @@ class Query extends Database
     public function insertQ($table, $insertData)
     {
         array_pop($insertData);
+        // unset($insertData['addProduct']);
         // print_r($insertData);die;
         $image = '';
         if (isset($insertData['password'])) { //If password is found it will be encrypted
@@ -27,6 +28,7 @@ class Query extends Database
         // die();
         $this->conn->query($sql);
     }
+
 
     public function selectAllQ($table)
     {
@@ -131,7 +133,7 @@ class Query extends Database
         return $record;
     }
     public function updateQ($table, $updateData, $pk, $id)
-    {   
+    {
         foreach ($updateData as $key => $value) {
             $updateData[$key] = "{$key} = '{$value}'";
         }
@@ -158,7 +160,8 @@ class Query extends Database
         $rows = $this->conn->query($sql);
         return $rows->num_rows;
     }
-    public function lastIndex($table,$pk){
+    public function lastIndex($table, $pk)
+    {
         $sql = "SELECT MAX($pk) as max FROM $table";
         $res = $this->conn->query($sql);
         $value = mysqli_fetch_assoc($res);

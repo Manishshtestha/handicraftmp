@@ -114,8 +114,8 @@ class Validate
 
         if (empty($prod_desc)) {
             return "❌Product description cannot be empty.";
-        } elseif (strlen($prod_desc) > 500) {
-            return "❌Product description exceeds the maximum allowed length of 500 characters.";
+        } elseif (strlen($prod_desc) > 5000) {
+            return "❌Product description exceeds the maximum allowed length of 5000 characters.";
         }
 
         if (empty($prod_category)) {

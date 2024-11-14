@@ -50,7 +50,7 @@ if (!empty($_POST)) {
     if (isset($_POST['updateProfile'])) {
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
-        $profile['description'] = $_POST['description'];
+        $profile['description'] = str_replace("'", "", $_POST['description']);
         $profile['profession'] = $_POST['profession'];
 
         $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
@@ -75,13 +75,13 @@ if (!empty($_POST)) {
         if (isset($_SESSION['cart'])) {
             $session_array_id = array_column($_SESSION['cart'], 'product_id');
             if (!in_array($_GET['id'], $session_array_id)) {
-                $session_cart = array(
+                $session_cart = [
                     'product_id' => $_POST['product_id'],
                     'product_name' => $_POST['product_name'],
                     'price' => $_POST['price'],
                     'main_img' => $_POST['main_img'],
                     'created_at' => $_POST['created_at']
-                );
+                ];
                 $_SESSION['cart'][] = $session_cart;
                 $_SESSION['success'] = ['value' => '✅Product added to Cart', 'timestamp' => time()];
             } else {
@@ -370,11 +370,9 @@ $total = $subtotal + $tax + $shipping;
                                         <!-- lorem 50 -->
                                         <?php echo $product['description']; ?>
                                     </div>
-                                    <div class="price">
-                                    </div>
-                                    <div class="checkout">
+                                    <div class="checkout" style="display:flex;align-items:center;justify-content:end">
+                                        <h2>Rs.<?php echo $product['price']?></h2>
                                         <form action="products.php?id=<?php echo $product['product_id'] ?>" method="post">
-                                            <p style="color:aliceblue;display:inline-flex;font-size:1.5em;">Rs.<?php echo $product['price']; ?></p>
                                             <input type="text" name="product_id" value="<?php echo $product['product_id'] ?>" hidden>
                                             <input type="text" name="product_name" value="<?php echo $product['product_name'] ?>" hidden>
                                             <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
@@ -382,7 +380,7 @@ $total = $subtotal + $tax + $shipping;
                                             <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
                                             <button class="btn" name="add_to_cart" <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled' ?>>
                                                 <span class="button_top">
-                                                    ADD TO CART
+                                                    Add to Cart
                                                 </span>
                                             </button>
                                         </form>
@@ -416,7 +414,7 @@ $total = $subtotal + $tax + $shipping;
         <div class="products" id="GridView" style="display:flex;">
             <?php
             if (!empty($products)) {
-                foreach (array_slice($products, 0, 10) as $product) { ?>
+                foreach (array_slice($products, 0, $noOfProducts) as $product) { ?>
                     <div class="card <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'grayed' ?>">
                         <div class="card-img">
                             <img src="./uploads/<?php echo $product['main_img'] ?>" alt="" srcset="" width="200px">

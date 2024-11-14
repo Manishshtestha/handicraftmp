@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('query.php');
+include'query.php';
 $obj = new Query();
 $orderno = $obj->lastIndex('orders','order_id') + 1;
 $cookie_name = "return_to";
