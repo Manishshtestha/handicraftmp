@@ -29,16 +29,16 @@
 /* carousel */
 .carousel{
     position: relative;
-    height: 100vh;
+    height: 90vh;
     overflow: hidden;
     margin-top: -50px;
 }
 .carousel .list{
     /* margin-top: 50px; */
     position: absolute;
-    width: 1140px;
+    width: 100%;
     /* max-width: 90%; */
-    height: 100vh;
+    height: 90vh;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -46,7 +46,7 @@
     position: absolute;
     left: 0%;
     width: 70%;
-    height: 100vh;
+    height: 90vh;
     font-size: 15px;
     transition: left 0.5s, opacity 0.5s, width 0.5s;
 }
@@ -77,7 +77,7 @@
     position: absolute;
     top: 50%;
     transform:  translateY(-50%);
-    transition: opacity 0.5s;
+    /* transition: opacity 0.5s; */
 }
 .carousel .list .item .introduce .title{
     font-size: 2em;
@@ -134,13 +134,13 @@
     }
 }
 .carousel .list .item:nth-child(2) .introduce .topic{
-    animation-delay: 1.2s;
+    animation-delay: 0.6s;
 }
 .carousel .list .item:nth-child(2) .introduce .des{
-    animation-delay: 1.4s;
+    animation-delay: 0.7s;
 }
 .carousel .list .item:nth-child(2) .introduce .seeMore{
-    animation-delay: 1.6s;
+    animation-delay: 0.8s;
 }
 /* next click */
 .carousel.next .item:nth-child(1){

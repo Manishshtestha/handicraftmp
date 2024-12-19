@@ -19,6 +19,7 @@ if (isset($_SESSION['user_id'])) {
     $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
     $fetchOrder = $obj->selectAlltypeQ('orders', 'buyer_id', $_SESSION['user_id']);
     $myProducts = $obj->selectAlltypeQ('products', 'artisan_id', $_SESSION['user_id']);
+    $products = $obj->selectUserBasedProducts($_SESSION['user_id']);;
 }
 
 $profile = [
@@ -129,7 +130,9 @@ if (!empty($_GET)) {
     $category = $_GET['category'] ?? '';
     $min_price = isset($_GET['min_price']) ? floatval($_GET['min_price']) : 0;
     $rating = isset($_GET['rating']) ? intval($_GET['rating']) : 0;
-    $sql = "SELECT * FROM products WHERE availability='1' AND ";
+    if (isset($_SESSION['user_id']))
+        $sql = "SELECT * FROM products WHERE artisan_id !='" . $_SESSION['user_id'] . "' AND availability='1' AND ";
+    else $sql = "SELECT * FROM products WHERE availability='1' AND ";
     $searchKeyword = $keyword;
     if (!empty($keyword)) {
         $sql .= "LOWER(product_name) LIKE LOWER('%{$keyword}%') AND ";
@@ -169,7 +172,7 @@ $total = $subtotal + $tax + $shipping;
     <link rel="stylesheet" href="./STATIC/CSS/navbar.css">
     <link rel="stylesheet" href="./STATIC/CSS/toast.css">
     <link rel="stylesheet" href="./STATIC/CSS/productCarousel.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./STATIC/CSS/all.min.css">
 </head>
 
 <body>
@@ -338,12 +341,8 @@ $total = $subtotal + $tax + $shipping;
         </div>
     </div>
     <div class="container" style="display:flex;justify-content:center;">
-        <button style="margin-top:5px;width:150px;top:25px;position:sticky;transform:translateX(550px);z-index:1000;background:none;color:aliceblue;border:1px solid aliceblue;" id="toggleView">
-            <span class="button_top">
-                Change View Mode
-            </span>
-        </button>
-        <div class="carousel" style="display:none;" id="Carousel">
+
+        <div class="carousel" id="Carousel">
             <div class="list">
                 <?php
                 if (!empty($products)) {
@@ -371,7 +370,7 @@ $total = $subtotal + $tax + $shipping;
                                         <?php echo $product['description']; ?>
                                     </div>
                                     <div class="checkout" style="display:flex;align-items:center;justify-content:end">
-                                        <h2>Rs.<?php echo $product['price']?></h2>
+                                        <h2>Rs.<?php echo $product['price'] ?></h2>
                                         <form action="products.php?id=<?php echo $product['product_id'] ?>" method="post">
                                             <input type="text" name="product_id" value="<?php echo $product['product_id'] ?>" hidden>
                                             <input type="text" name="product_name" value="<?php echo $product['product_name'] ?>" hidden>
@@ -406,12 +405,13 @@ $total = $subtotal + $tax + $shipping;
             </div>
             <div class="arrows">
                 <button id="prev">
-                    < </button>
-                        <button id="next"> > </button>
-                        <button id="back" style="display:none;">Return</button>
+                    <b>
+                        < </b></button>
+                <button id="next"> <b> ></b> </button>
+                <button id="back" style="display:none;">Return</button>
             </div>
         </div>
-        <div class="products" id="GridView" style="display:flex;">
+        <div class="products" id="GridView">
             <?php
             if (!empty($products)) {
                 foreach (array_slice($products, 0, $noOfProducts) as $product) { ?>
@@ -419,24 +419,26 @@ $total = $subtotal + $tax + $shipping;
                         <div class="card-img">
                             <img src="./uploads/<?php echo $product['main_img'] ?>" alt="" srcset="" width="200px">
                         </div>
-                        <div class="card-title"><?php echo $product['product_name'] ?></div>
-                        <div class="card-subtitle"><?php echo $product['description'] ?></div>
-                        <hr class="card-divider">
-                        <div class="card-footer">
-                            <div class="card-price"><span>Rs.</span><?php echo $product['price'] ?></div>
-                            <form action="products.php?id=<?php echo $product['product_id'] ?>" method="post">
-                                <input type="text" name="product_id" value="<?php echo $product['product_id'] ?>" hidden>
-                                <input type="text" name="product_name" value="<?php echo $product['product_name'] ?>" hidden>
-                                <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
-                                <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
-                                <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
-                                <button class="btn" name="add_to_cart" <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled' ?>>
-                                    <span class="button_top">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </span>
-                                </button>
-                            </form>
+                        <div class="card-details">
+                            <div class="card-title"><?php echo $product['product_name'] ?></div>
+
+                            <div class="card-footer">
+                                <div class="card-price"><span>Rs.</span><?php echo $product['price'] ?></div>
+                                <form action="products.php?id=<?php echo $product['product_id'] ?>" method="post">
+                                    <input type="text" name="product_id" value="<?php echo $product['product_id'] ?>" hidden>
+                                    <input type="text" name="product_name" value="<?php echo $product['product_name'] ?>" hidden>
+                                    <input type="text" name="price" value="<?php echo $product['price'] ?>" hidden>
+                                    <input type="text" name="main_img" value="<?php echo $product['main_img'] ?>" hidden>
+                                    <input type="text" name="created_at" value="<?php echo $product['created_at'] ?>" hidden>
+                                    <button class="btn" name="add_to_cart" <?php if (isset($_SESSION['user_id'])) if ($product['artisan_id'] == $_SESSION['user_id']) echo 'disabled' ?>>
+                                        <span class="button_top">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
+
                     </div>
                 <?php }
             } else { ?>
@@ -447,9 +449,13 @@ $total = $subtotal + $tax + $shipping;
             // var_dump($_SESSION['cart']);
             ?>
         </div>
+
+
     </div>
+    <p style="text-align:center;font-size:1em;color:aliceblue;bottom:0;position:sticky;">&copy;HandCrafted Np|<?php echo date('Y') ?></p>
     <script src="./STATIC/JS/functions.js"></script>
     <script src="./STATIC/JS/Carousel.js"></script>
+    <script src="./STATIC/JS/all.min.js"></script>
 </body>
 
 </html>

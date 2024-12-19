@@ -93,6 +93,19 @@ class Query extends Database
             return false;
         }
     }
+    public function selectUserBasedProducts($user_id)
+    {
+        $sql = "SELECT * FROM products WHERE artisan_id!=$user_id AND availability='1'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return false;
+        }
+    }
     public function selectAlltypeInDirectionQ($table, $order, $dir = "DESC")
     {
         $sql = "SELECT * FROM $table ORDER BY $order $dir";
@@ -118,9 +131,6 @@ class Query extends Database
     public function deleteQ($table, $pk, $id)
     {
         //Remove the files if present
-        // $img = "SELECT image FROM $table WHERE $pk=$id";
-        // $imgname = $this->conn->query($img);
-        // unlink("/staic/uploads/$imgname");
         $sql = "DELETE FROM $table WHERE $pk = '$id'";
         $this->conn->query($sql);
     }

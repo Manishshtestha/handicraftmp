@@ -62,8 +62,8 @@ body {
 		transform: translateY(-0.2em);
 		transition: transform 0.1s ease;
 	}
-	&:hover{
-		cursor:pointer
+	&:hover {
+		cursor: pointer;
 	}
 	&:hover .button_top {
 		transform: translateY(-0.33em);
@@ -474,9 +474,9 @@ body {
 	border-radius: 10px;
 }
 
-.products,
 .grid {
 	margin-top: 15px;
+	padding-top: 50px;
 	/* border: 1px solid red; */
 	border-radius: 10px;
 	display: flex;
@@ -489,7 +489,7 @@ body {
 		--bg-color: #111;
 		--main-color: #fefefe;
 		--main-focus: #2d8cf0;
-		width: 248px;
+		width: 256px;
 		height: 300px;
 		background: rgba(25, 25, 25, 0.8);
 		border: 2px solid var(--main-color);
@@ -596,6 +596,40 @@ body {
 		transform: translateY(3px);
 	}
 }
+.products{
+	display:flex;
+	flex-wrap: wrap;;
+	width:100%;
+	gap:10px;
+	.card{
+		width:24.3%;
+		border:1px solid grey;
+		display: flex;
+		align-items: center;
+		gap:10px;
+		img{
+			width:100px;
+			aspect-ratio: 1/1;
+			transition: 0.2s;
+		}
+		.card-details{
+			display: flex;
+			flex-direction: column;
+			gap:10px;
+		}
+		.card-footer{
+			display:flex;
+			align-items: center;
+			gap:10px;
+			.card-price{
+				width:100px;
+			}
+		}
+		&:hover img{
+			transform: scale(1.1);
+		}
+	}
+}
 .grid .card {
 	width: 316px;
 	.card-subtitle {
@@ -610,11 +644,11 @@ body {
 	}
 }
 .grayed {
-	.btn span{
+	.btn span {
 		background-color: red !important;
 		color: aliceblue !important;
 	}
-	.btn:hover{
+	.btn:hover {
 		cursor: not-allowed;
 	}
 }
@@ -746,7 +780,7 @@ body {
 	}
 }
 
-.order{
+.order {
 	width: 100%;
 	/* margin: 5px; */
 	border: 1px solid grey;
@@ -755,14 +789,14 @@ body {
 	color: aliceblue;
 	padding: 10px;
 	transition: max-height 0.5s ease-out;
-	.items{
-		display:flex;
+	.items {
+		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
-		img{
+		img {
 			width: 100px;
 		}
-		p{
+		p {
 			margin-top: 5px;
 			padding: 5px;
 			border-radius: 10px;
@@ -773,7 +807,7 @@ body {
 	}
 }
 
-.productList{
+.productList {
 	width: 100%;
 	display: flex;
 }

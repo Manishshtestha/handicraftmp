@@ -81,7 +81,6 @@ function removeModal(msg) {
 		default:
 			break;
 	}
-	// if (msg === "update") umodal.style.display = "none";
 }
 
 setTimeout(function () {
@@ -106,10 +105,6 @@ document
 			searchDropdown.style.display === "block" ? "none" : "block";
 	});
 
-// document.getElementById("dropdownMenuBtn").addEventListener("click", function () {
-//     var searchDropdown = document.getElementById("dropMenu");
-// 	searchDropdown.style.display = (searchDropdown.style.display === "block") ? "none" : "block";
-// });
 
 const mainImageInput = document.getElementById("mainImageInput");
 mainImageInput.addEventListener("change", handleImageChange);
@@ -156,11 +151,3 @@ document.querySelectorAll(buttonClass).forEach((btn) => {
 	});
 });
 
-document.getElementById("toggleView").addEventListener("click", function () {
-	var carousel = document.getElementById("Carousel");
-	var gridview = document.getElementById("GridView");
-	carousel.style.display =
-		carousel.style.display === "block" ? "none" : "block";
-	gridview.style.display =
-		gridview.style.display === "flex" ? "none" : "flex";
-});

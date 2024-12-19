@@ -16,7 +16,7 @@ $_SESSION['page'] = 'homepage';
 $artisans = $obj->selectAlltypeQ('users', 'user_type', 'artisan');
 $products = $obj->selectAllQ('products');
 $noOfProducts = $obj->numQ('products');
-
+$orders = $obj->selectAllQ('orders');
 // $userDetails = isset($_SESSION['user_id']) ? $obj->getRecordById('users', 'user_id', $_SESSION['user_id']) : [];
 if (isset($_SESSION['user_id'])) {
     $userDetails = $obj->getRecordById('users', 'user_id', $_SESSION['user_id']);
@@ -52,9 +52,9 @@ if (!empty($_POST)) {
     if (isset($_POST['updateProfile'])) {
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
-        $profile['description'] = str_replace("'","",$_POST['description']);
+        $profile['description'] = str_replace("'", "", $_POST['description']);
         $profile['profession'] = $_POST['profession'];
- 
+
         $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
         $_SESSION['success'] = ['value' => '✅Profile Update Successful', 'timestamp' => time()];
     }
@@ -75,6 +75,18 @@ if (!empty($_POST)) {
 
     if (isset($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $key => $product) {
+            if (isset($_POST['rem' . $key])) {
+                $_SESSION['success'] = ['value' => '✅Product removed to Cart', 'timestamp' => time()];
+                unset($_SESSION['cart'][$key]);
+                if (count($_SESSION['cart']) == 0) {
+                    unset($_SESSION['cart']);
+                }
+            }
+        }
+    }
+
+    if (isset($_POST['cancelOrder'])) {
+        foreach ($orders as $key => $order) {
             if (isset($_POST['rem' . $key])) {
                 $_SESSION['success'] = ['value' => '✅Product removed to Cart', 'timestamp' => time()];
                 unset($_SESSION['cart'][$key]);
@@ -123,14 +135,20 @@ if (isset($_SESSION['status'])) {
                 // var_dump($orderItemInsertData);die;
                 $obj->insertQ('order_items', $orderItemInsertData);
             }
-            unset($_SESSION['cart']);
+            switch ($_SESSION['status']) {
+                case 'success':
+                    unset($_SESSION['cart']);
+                    $_SESSION['success'] = ['value' => '✅Order processed successfully', 'timestamp' => time()];
+                    break;
+                default:
+                    $_SESSION['error'] = ['value' => '❌Order failed to process', 'timestamp' => time()];
+            }
             unset($_SESSION['status']);
-            $_SESSION['success'] = ['value' => 'Order processed successfully', 'timestamp' => time()];
         } catch (Exception $e) {
-            $_SESSION['error'] = ['value' => 'Error processing order.' . $e->getMessage(), 'timestamp' => time()];
+            $_SESSION['error'] = ['value' => '❌Error processing order.' . $e->getMessage(), 'timestamp' => time()];
         }
     } else {
-        $_SESSION['error'] = ['value' => 'Cart is empty or status is not set', 'timestamp' => time()];
+        $_SESSION['error'] = ['value' => '❌Cart is empty or status is not set', 'timestamp' => time()];
     }
 }
 
@@ -146,7 +164,7 @@ if (isset($_SESSION['status'])) {
     <link rel="stylesheet" href="./STATIC/CSS/navbar.css">
     <link rel="stylesheet" href="./STATIC/CSS/toast.css">
     <link rel="stylesheet" href="./STATIC/CSS/productCarousel.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./STATIC/CSS/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=SUSE:wght@500&display=swap" rel="stylesheet">
@@ -323,13 +341,9 @@ if (isset($_SESSION['status'])) {
             </div>
         </div>
     </div>
-    <div class="categories">
-
-    </div>
-    <div class="artisans">
-
-    </div>
+    <p style="text-align:center;font-size:1em;color:aliceblue;">&copy;HandCrafted Np|<?php echo date('Y') ?></p>
     <script src="./STATIC/JS/functions"></script>
+    <script src="./STATIC/JS/all.min"></script>
 </body>
 
 </html>

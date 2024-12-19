@@ -36,7 +36,7 @@ if (!empty($_POST)) {
     if (isset($_POST['updateProfile'])) {
         $profile['phone'] = $_POST['phone'];
         $profile['address'] = $_POST['address'];
-        $profile['description'] = str_replace("'","",$_POST['description']);
+        $profile['description'] = str_replace("'", "", $_POST['description']);
         $profile['profession'] = $_POST['profession'];
 
         $obj->updateQ('users', $profile, 'user_id', $_SESSION['user_id']);
@@ -111,7 +111,7 @@ $total = $subtotal + $tax + $shipping;
     <link rel="stylesheet" href="./STATIC/CSS/design.css">
     <link rel="stylesheet" href="./STATIC/CSS/navbar.css">
     <link rel="stylesheet" href="./STATIC/CSS/toast.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./STATIC/CSS/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=SUSE:wght@500&display=swap" rel="stylesheet">
@@ -161,8 +161,8 @@ $total = $subtotal + $tax + $shipping;
                 <h1>Contact Us</h1>
                 <p>We'd love to hear from you! Feel Free to reach out to us with any questions, feedback or inquiries.</p>
             </div>
-            <div class="bottom">
-                <div class="left">
+            <div class="bottom" >
+                <div class="left" style="margin-right:30px">
                     <ul>
                         <li>
                             <h3>Headquarters</h3>
@@ -191,7 +191,7 @@ $total = $subtotal + $tax + $shipping;
                         <input type="text" name="name" id="name" placeholder="Name" required>
                         <input type="email" name="email" id="email" placeholder="Email" required>
                         <textarea name="message" id="" placeholder="Message" cols="3" required></textarea>
-                        <button class="btn" name="contact" style="margin-left:100px;">
+                        <button class="btn" name="contact">
                             <span class="button_top">
                                 Submit
                             </span>
@@ -202,9 +202,8 @@ $total = $subtotal + $tax + $shipping;
         </div>
     </div>
     <p style="text-align:center;font-size:1em;color:aliceblue;">&copy;HandCrafted Np|<?php echo date('Y') ?></p>
-    <script src="./STATIC/JS/functions.js">
-
-    </script>
+    <script src="./STATIC/JS/functions.js"></script>
+    <script src="./STATIC/JS/all.min.js"></script>
 </body>
 
 </html>
